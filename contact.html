@@ -5,25 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>تواصل - منصة التاجر الذكية</title>
   <style>
-    :root{--brand:#0f4c81;--bg:#f5f7fa;--card:#fff;--text:#111827;--muted:#6b7280;}
+    :root{--brand:#0f4c81;--bg:#f5f7fa;--card:#fff;--text:#111827;--muted:#6b7280;--line:#e5e7eb;}
     *{box-sizing:border-box}
-    body{margin:0;font-family:Arial,system-ui,-apple-system,Segoe UI; background:var(--bg); color:var(--text)}
-    header{background:var(--brand); color:#fff; padding:22px 16px; text-align:center}
-    nav{background:#0b3a63; display:flex; gap:10px; justify-content:center; padding:10px 12px; flex-wrap:wrap}
-    nav a{color:#fff;text-decoration:none;padding:8px 12px;border-radius:8px;opacity:.95}
+    body{margin:0;font-family:Arial,system-ui,-apple-system,Segoe UI;background:var(--bg);color:var(--text)}
+    header{background:var(--brand);color:#fff;padding:20px 14px;text-align:center}
+    nav{background:#0b3a63;display:flex;gap:10px;justify-content:center;padding:10px 12px;flex-wrap:wrap}
+    nav a{color:#fff;text-decoration:none;padding:8px 12px;border-radius:10px;opacity:.95}
     nav a:hover{background:rgba(255,255,255,.12)}
-    main{max-width:980px; margin:18px auto; padding:0 14px}
-    .card{background:var(--card); border-radius:14px; padding:18px; box-shadow:0 6px 18px rgba(0,0,0,.08)}
-    .btn{display:inline-block;background:#25D366;color:#fff;text-decoration:none;padding:12px 16px;border-radius:10px;font-weight:900}
-    .muted{color:var(--muted)}
-    footer{margin-top:18px; text-align:center; padding:14px; color:var(--muted)}
+    main{max-width:900px;margin:18px auto;padding:0 14px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+    .muted{color:var(--muted);line-height:1.8}
+    .btn{display:inline-block;background:#25D366;color:#fff;text-decoration:none;padding:12px 16px;border-radius:12px;font-weight:900}
+    footer{margin-top:18px;text-align:center;padding:16px;color:var(--muted)}
   </style>
 </head>
 <body>
 
 <header>
-  <h1 style="margin:0">تواصل معنا</h1>
-  <p style="margin:6px 0 0;opacity:.95">جاهزين نخدمك ونبدأ معك خلال دقائق</p>
+  <h1 style="margin:0">تواصل</h1>
+  <p style="margin:8px 0 0;opacity:.95">نرد عليك بسرعة ونساعدك في التفعيل</p>
 </header>
 
 <nav>
@@ -31,31 +31,26 @@
   <a href="pricing.html">الباقات</a>
   <a href="signup.html">ابدأ الآن</a>
   <a href="contact.html">تواصل</a>
+  <a href="privacy.html">الخصوصية</a>
 </nav>
 
 <main>
   <section class="card">
-    <h2>واتساب</h2>
-    <p class="muted">اضغط الزر وسيتم فتح رسالة ترحيب تلقائية.</p>
+    <h2 style="margin:0 0 8px">قنوات التواصل</h2>
+    <p class="muted" style="margin:0">واتساب هو أسرع قناة للتفعيل والاستفسارات.</p>
 
-    <a class="btn"
-       href="https://wa.me/966565652570?text=حياك%20الله%20👋%0Aيسعدنا%20اهتمامك%20بمنصة%20التاجر%20الذكية%20💼%0A%0Aعشان%20نبدأ%20معك%20نحتاج:%0Aاسم%20النشاط:%0Aنوع%20النشاط:%0Aالمدينة:"
-       target="_blank">
-      تواصل عبر واتساب
-    </a>
+    <div style="margin-top:14px">
+      <a class="btn" href="https://wa.me/966565652570?text=%D8%AD%D9%8A%D8%A7%D9%83%20%D8%A7%D9%84%D9%84%D9%87%20%F0%9F%91%8B%0A%D8%B9%D9%86%D8%AF%D9%8A%20%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D8%B9%D9%86%20%D9%85%D9%86%D8%B5%D8%A9%20%D8%A7%D9%84%D8%AA%D8%A7%D8%AC%D8%B1%20%D8%A7%D9%84%D8%B0%D9%83%D9%8A%D8%A9." target="_blank" rel="noopener">
+        تواصل عبر واتساب
+      </a>
+    </div>
 
-    <hr style="margin:18px 0; border:none; border-top:1px solid #e5e7eb">
-
-    <h2>معلومات سريعة</h2>
-    <ul>
-      <li>الرد عادة خلال وقت قصير</li>
-      <li>يمكن البدء بالباقة الأساسية ثم الترقية لاحقًا</li>
-      <li>نقدر نخصص الرسائل والتقارير حسب نشاطك</li>
-    </ul>
+    <p class="muted" style="margin-top:14px;font-size:14px">
+      نصيحة: إذا عندك بيانات نشاطك جاهزة (اسم النشاط، المدينة، الإيميل، رقم الواتساب) راح نفعّل لك أسرع.
+    </p>
   </section>
 </main>
 
 <footer>© 2026 SaaS Merchant Platform</footer>
-
 </body>
 </html>
