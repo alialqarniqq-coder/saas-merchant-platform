@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>الدفع الآمن - منصة التاجر الذكية</title>
+
+  <link rel="stylesheet" href="https://cdn.moyasar.com/mpf/1.7.3/moyasar.css" />
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=fetch"></script>
+  <script src="https://cdn.moyasar.com/mpf/1.7.3/moyasar.js"></script>
+
+  <style>
+    body{margin:0;font-family:Arial,system-ui;background:#f5f7fa;color:#111827}
+    header{background:#0f4c81;color:#fff;padding:18px 14px;text-align:center}
+    main{max-width:760px;margin:18px auto;padding:0 14px}
+    .card{background:#fff;border-radius:14px;padding:16px;box-shadow:0 6px 18px rgba(0,0,0,.08)}
+    .muted{color:#6b7280;font-size:14px;line-height:1.7}
+    .mysr-form{margin-top:14px}
+  </style>
+</head>
+<body>
+  <header>
+    <h1 style="margin:0;font-size:20px">الدفع الآمن</h1>
+    <p style="margin:6px 0 0;opacity:.95">أكمل الدفع لتفعيل الاشتراك تلقائيًا</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <div class="muted" id="info"></div>
+      <div class="mysr-form"></div>
+    </section>
+  </main>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  const orderId = params.get("order_id");
+  if (!orderId) {
+    document.getElementById("info").textContent = "لا يوجد رقم طلب. ارجع لصفحة التسجيل.";
+    throw new Error("Missing order_id");
+  }
+
+  // ✅ عدّلها
+  const PUBLISHABLE_KEY = "pk_live_xxxxxxxxxxxxxxxxxxxxx";
+
+  // خريطة أسعار بسيطة (هللات)
+  const planToAmount = {
+    "الأساسية 10 ريال": 1000,
+    "المتقدمة 25 ريال": 2500,
+    "البرو 49 ريال": 4900
+  };
+
+  // نجيب بيانات الطلب من Supabase عبر Edge Function (اختياري)
+  // لتبسيط البداية: اختر مبلغ ثابت أو مرّره من create-order داخل query.
+  const amount = Number(params.get("amount")) || 1000;
+
+  document.getElementById("info").innerHTML =
+    "رقم الطلب: <b>" + orderId + "</b><br>" +
+    "سيتم تحويلك بعد الدفع لتفعيل الاشتراك.";
+
+  Moyasar.init({
+    element: ".mysr-form",
+    amount: amount,
+    currency: "SAR",
+    description: "Merchant Platform Subscription",
+    publishable_api_key: PUBLISHABLE_KEY,
+    callback_url: location.origin + "/payment_return.html?order_id=" + encodeURIComponent(orderId),
+
+    supported_networks: ["visa", "mastercard", "mada"],
+    methods: ["creditcard", "applepay", "stcpay"],
+
+    on_completed: async function(payment) {
+      // حفظ payment_id في الطلب (مفيد قبل تحويل 3DS)
+      await fetch("https://YOUR_PROJECT.supabase.co/functions/v1/save-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ order_id: orderId, payment_id: payment.id })
+      });
+    }
+  });
+</script>
+</body>
+</html>
