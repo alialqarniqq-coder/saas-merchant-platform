@@ -94,5 +94,55 @@
   واتساب
 </a>
 
-</body>
+<!-- Supabase Client -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  const SUPABASE_URL = "ضع_هنا_Project_URL";
+  const SUPABASE_KEY = "ضع_هنا_Publishable_API_Key";
+
+  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  async function registerMerchant() {
+    const name = document.getElementById("merchant_name").value;
+    const email = document.getElementById("merchant_email").value;
+    const whatsapp = document.getElementById("merchant_whatsapp").value;
+
+    const { data, error } = await supabase
+      .from("merchants")
+      .insert([{ name, email, whatsapp }]);
+
+    if (error) {
+      alert("حدث خطأ أثناء التسجيل");
+      console.error(error);
+    } else {
+      alert("تم تسجيلك بنجاح ✅");
+    }
+  }
+<!-- Supabase Client -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  const SUPABASE_URL = "ضع_هنا_Project_URL";
+  const SUPABASE_KEY = "ضع_هنا_Publishable_API_Key";
+
+  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  async function registerMerchant() {
+    const name = document.getElementById("merchant_name").value;
+    const email = document.getElementById("merchant_email").value;
+    const whatsapp = document.getElementById("merchant_whatsapp").value;
+
+    const { data, error } = await supabase
+      .from("merchants")
+      .insert([{ name, email, whatsapp }]);
+
+    if (error) {
+      alert("حدث خطأ أثناء التسجيل");
+      console.error(error);
+    } else {
+      alert("تم تسجيلك بنجاح ✅");
+    }
+  }
+</script></body>
 </html>
