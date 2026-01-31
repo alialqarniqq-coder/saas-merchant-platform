@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ابدأ الآن - منصة التاجر الذكية</title>
+
   <style>
     :root{--brand:#0f4c81;--bg:#f5f7fa;--card:#fff;--text:#111827;--muted:#6b7280;}
     *{box-sizing:border-box}
@@ -17,7 +18,8 @@
     label{display:block;margin:10px 0 6px;font-weight:700}
     input,select{width:100%;padding:12px;border-radius:10px;border:1px solid #d1d5db;font-size:16px}
     .row{display:grid; gap:12px; grid-template-columns:1fr}
-    .btn{display:inline-block;background:var(--brand);color:#fff;text-decoration:none;padding:12px 16px;border-radius:10px;font-weight:800;border:none;width:100%;font-size:16px}
+    .btn{display:inline-block;background:var(--brand);color:#fff;text-decoration:none;padding:12px 16px;border-radius:10px;font-weight:800;border:none;width:100%;font-size:16px; cursor:pointer}
+    .btn:disabled{opacity:.7; cursor:not-allowed}
     .muted{color:var(--muted)}
     footer{margin-top:18px; text-align:center; padding:14px; color:var(--muted)}
     .wa-float{
@@ -25,9 +27,11 @@
       background:#25D366; color:#fff; padding:12px 16px; border-radius:999px;
       text-decoration:none; font-weight:800; box-shadow:0 8px 22px rgba(0,0,0,.18);
     }
+    .msg{margin-top:10px; font-weight:700}
     @media(min-width:820px){ .row{grid-template-columns:1fr 1fr} }
   </style>
 </head>
+
 <body>
 
 <header>
@@ -45,13 +49,14 @@
 <main>
   <section class="card">
     <h2>بيانات النشاط</h2>
-    <p class="muted">بعد الضغط على الزر، بتفتح محادثة واتساب برسالة جاهزة.</p>
+    <p class="muted">سيتم حفظ بياناتك ثم فتح محادثة واتساب برسالة جاهزة.</p>
 
     <div class="row">
       <div>
-        <label>اسم النشاط</label>
+        <label>اسم النشاط *</label>
         <input id="biz" placeholder="مثال: عالم الفخامة للأثاث" />
       </div>
+
       <div>
         <label>نوع النشاط</label>
         <select id="type">
@@ -63,10 +68,12 @@
           <option value="أخرى">أخرى</option>
         </select>
       </div>
+
       <div>
         <label>المدينة</label>
         <input id="city" placeholder="مثال: خميس مشيط / أبها" />
       </div>
+
       <div>
         <label>الباقة المطلوبة</label>
         <select id="plan">
@@ -75,9 +82,20 @@
           <option value="البرو 49 ريال">البرو (49 ريال)</option>
         </select>
       </div>
+
+      <div>
+        <label>الإيميل *</label>
+        <input id="email" type="email" placeholder="name@email.com" />
+      </div>
+
+      <div>
+        <label>رقم واتساب (بدون +) *</label>
+        <input id="whatsapp" inputmode="numeric" placeholder="مثال: 565656570" />
+      </div>
     </div>
 
-    <button class="btn" onclick="goWhatsApp()">إرسال البيانات عبر واتساب</button>
+    <button id="submitBtn" class="btn" onclick="goWhatsApp()">تسجيل وفتح واتساب</button>
+    <div id="signupMsg" class="msg"></div>
   </section>
 </main>
 
@@ -87,23 +105,100 @@
    href="https://wa.me/966565652570?text=حياك%20الله%20👋%0Aأبغى%20أبدأ%20الاشتراك%20في%20منصة%20التاجر%20الذكية."
    target="_blank">واتساب</a>
 
+<!-- Supabase JS (CDN) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
-  function goWhatsApp(){
-    var biz = encodeURIComponent(document.getElementById('biz').value || '—');
-    var type = encodeURIComponent(document.getElementById('type').value || '—');
-    var city = encodeURIComponent(document.getElementById('city').value || '—');
-    var plan = encodeURIComponent(document.getElementById('plan').value || '—');
+  // ✅ 1) بيانات Supabase (نفس اللي عندك)
+  const SUPABASE_URL = "https://udsqvnvjktggdtzpoyts.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_myAYYiVNUfEUfkFfnFsbNw_aa5F8mjV";
 
-    var msg =
-      "حياك الله 👋\n" +
-      "حاب أبدأ الاشتراك في منصة التاجر الذكية.\n\n" +
-      "اسم النشاط: " + decodeURIComponent(biz) + "\n" +
-      "نوع النشاط: " + decodeURIComponent(type) + "\n" +
-      "المدينة: " + decodeURIComponent(city) + "\n" +
-      "الباقة: " + decodeURIComponent(plan);
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    var url = "https://wa.me/966565652570?text=" + encodeURIComponent(msg);
-    window.open(url, "_blank");
+  function setMsg(text, color){
+    const el = document.getElementById("signupMsg");
+    el.textContent = text;
+    el.style.color = color || "#111";
+  }
+
+  function normalizeWhatsappToE164(localNumber){
+    // يقبل: 565656570 أو 0565656570 -> يرجع 966565656570
+    let n = (localNumber || "").replace(/\D/g, "");
+    if (!n) return "";
+    if (n.startsWith("0")) n = n.slice(1);
+    if (n.startsWith("966")) return n;
+    return "966" + n;
+  }
+
+  async function goWhatsApp(){
+    const btn = document.getElementById("submitBtn");
+    btn.disabled = true;
+    btn.textContent = "جاري التسجيل...";
+
+    try {
+      const business_name = (document.getElementById("biz").value || "").trim();
+      const business_type = (document.getElementById("type").value || "").trim();
+      const city = (document.getElementById("city").value || "").trim();
+      const plan = (document.getElementById("plan").value || "").trim();
+      const email = (document.getElementById("email").value || "").trim();
+      const whatsapp_input = (document.getElementById("whatsapp").value || "").trim();
+      const whatsapp = normalizeWhatsappToE164(whatsapp_input);
+
+      if (!business_name || !email || !whatsapp_input) {
+        setMsg("فضلاً عبّي الحقول المطلوبة: اسم النشاط + الإيميل + رقم واتساب.", "crimson");
+        btn.disabled = false;
+        btn.textContent = "تسجيل وفتح واتساب";
+        return;
+      }
+
+      setMsg("يتم حفظ البيانات الآن...", "#333");
+
+      // ✅ 2) حفظ بيانات التاجر في جدول merchants
+      const { error } = await supabase
+        .from("merchants")
+        .insert([{
+          business_name,
+          business_type,
+          city,
+          email,
+          whatsapp,
+          plan
+        }]);
+
+      if (error) {
+        console.error(error);
+        setMsg("صار خطأ في التسجيل: " + (error.message || "غير معروف"), "crimson");
+        btn.disabled = false;
+        btn.textContent = "تسجيل وفتح واتساب";
+        return;
+      }
+
+      setMsg("✅ تم التسجيل بنجاح! جاري فتح واتساب...", "green");
+
+      // ✅ 3) رسالة واتساب احترافية
+      const msg =
+`حياكم الله 👋
+تم التسجيل في منصة التاجر الذكية.
+
+اسم النشاط: ${business_name}
+نوع النشاط: ${business_type || "—"}
+المدينة: ${city || "—"}
+البريد: ${email}
+رقم التواصل: ${whatsapp}
+الباقة: ${plan || "—"}
+
+بانتظار تفعيل الاشتراك 🤍`;
+
+      const url = "https://wa.me/966565652570?text=" + encodeURIComponent(msg);
+      window.open(url, "_blank");
+
+    } catch (e) {
+      console.error(e);
+      setMsg("حدث خطأ غير متوقع. جرّب مرة ثانية.", "crimson");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "تسجيل وفتح واتساب";
+    }
   }
 </script>
 
