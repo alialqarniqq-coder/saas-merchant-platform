@@ -4,41 +4,50 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>سياسة الخصوصية - منصة التاجر الذكية</title>
+
   <style>
     :root{
-      --brand:#0f4c81; --brand2:#0b3a63;
-      --bg:#f5f7fa; --card:#ffffff;
-      --text:#111827; --muted:#6b7280; --border:#e5e7eb;
+      --brand:#0f4c81;
+      --brand-dark:#0b3a63;
+      --bg:#f5f7fa;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --shadow:0 10px 24px rgba(0,0,0,.08);
     }
     *{box-sizing:border-box}
     body{margin:0;font-family:Arial,system-ui,-apple-system,Segoe UI; background:var(--bg); color:var(--text)}
     header{background:var(--brand); color:#fff; padding:22px 16px; text-align:center}
-    nav{background:var(--brand2); display:flex; gap:10px; justify-content:center; padding:10px 12px; flex-wrap:wrap}
+    header h1{margin:0}
+    header p{margin:6px 0 0;opacity:.95}
+    nav{background:var(--brand-dark); display:flex; gap:10px; justify-content:center; padding:10px 12px; flex-wrap:wrap}
     nav a{color:#fff;text-decoration:none;padding:8px 12px;border-radius:8px;opacity:.95}
     nav a:hover{background:rgba(255,255,255,.12)}
     main{max-width:980px; margin:18px auto; padding:0 14px}
-    .card{background:var(--card); border-radius:14px; padding:18px; box-shadow:0 6px 18px rgba(0,0,0,.08)}
-    h1,h2{margin:0 0 10px}
-    p,li{line-height:1.9}
+    .card{background:var(--card); border-radius:14px; padding:18px; box-shadow:var(--shadow); border:1px solid rgba(229,231,235,.7)}
+    h2{margin:0 0 10px}
+    p{margin:10px 0; line-height:1.9}
+    ul{margin:10px 0; padding:0 18px; line-height:1.9}
     .muted{color:var(--muted)}
-    .meta{display:flex; gap:10px; flex-wrap:wrap; margin-top:8px}
-    .pill{background:#eef2ff;border:1px solid var(--border); color:#1f2937; padding:6px 10px;border-radius:999px;font-size:13px}
-    .hr{height:1px;background:var(--border);margin:16px 0}
-    ul{margin:10px 0 0; padding:0 18px}
+    .note{
+      margin-top:14px; padding:12px 14px; border-radius:12px;
+      border:1px dashed var(--line); background:#fafafa;
+    }
     footer{margin-top:18px; text-align:center; padding:14px; color:var(--muted)}
-    a{color:var(--brand); text-decoration:none}
-    a:hover{text-decoration:underline}
+    .badge{
+      display:inline-block; padding:6px 10px; border-radius:999px;
+      background:rgba(15,76,129,.10); color:var(--brand); font-weight:700; font-size:12px;
+      border:1px solid rgba(15,76,129,.15);
+    }
   </style>
 </head>
+
 <body>
 
 <header>
-  <h1 style="margin:0">سياسة الخصوصية</h1>
-  <p style="margin:6px 0 0;opacity:.95">منصة التاجر الذكية</p>
-  <div class="meta" style="justify-content:center">
-    <span class="pill">آخر تحديث: 2026-01-31</span>
-    <span class="pill">اللغة: العربية</span>
-  </div>
+  <h1>سياسة الخصوصية</h1>
+  <p>نوضح لك كيف نجمع بياناتك ونستخدمها ونحميها</p>
 </header>
 
 <nav>
@@ -51,99 +60,70 @@
 
 <main>
   <section class="card">
-    <p class="muted">
-      توضّح سياسة الخصوصية هذه نوع البيانات التي نجمعها عند استخدامك للمنصة أو إرسال بياناتك،
-      وكيف نستخدمها ونحميها. باستخدامك للمنصة، فأنت توافق على هذه السياسة.
-    </p>
+    <div class="badge">آخر تحديث: 2026</div>
 
-    <div class="hr"></div>
-
-    <h2>1) البيانات التي نجمعها</h2>
+    <h2 style="margin-top:12px">1) البيانات التي نجمعها</h2>
+    <p class="muted">عند تعبئة نموذج التسجيل، قد نجمع البيانات التالية:</p>
     <ul>
-      <li>بيانات النشاط التجاري (مثل: اسم النشاط، نوع النشاط، المدينة).</li>
-      <li>بيانات التواصل (مثل: البريد الإلكتروني ورقم الواتساب).</li>
-      <li>أي بيانات إضافية يرسلها المستخدم عبر واتساب أو النموذج (اختياريًا).</li>
+      <li>اسم النشاط التجاري</li>
+      <li>نوع النشاط</li>
+      <li>المدينة</li>
+      <li>البريد الإلكتروني</li>
+      <li>رقم الواتساب للتواصل والتنفيذ</li>
     </ul>
 
-    <div class="hr"></div>
-
-    <h2>2) كيف نستخدم البيانات</h2>
+    <h2>2) كيف نستخدم بياناتك</h2>
+    <p>نستخدم بياناتك للأغراض التالية فقط:</p>
     <ul>
-      <li>التواصل معك لإكمال الاشتراك وتقديم الخدمة.</li>
-      <li>إرسال تقارير أو ملفات (مثل PDF) أو روابط ذات صلة بالخدمة.</li>
-      <li>تحسين جودة الخدمة وتجربة الاستخدام.</li>
-      <li>الالتزام بالمتطلبات النظامية عند الحاجة.</li>
+      <li>تسجيل طلبك وتشغيل الخدمة بشكل آلي</li>
+      <li>تحسين جودة الخدمة وتجربة المستخدم</li>
+      <li>التواصل عند الحاجة لإتمام التنفيذ أو التحقق من الطلب</li>
     </ul>
 
-    <div class="hr"></div>
-
-    <h2>3) استخدام الخدمات السحابية</h2>
-    <p>
-      قد نستخدم خدمات سحابية موثوقة لتخزين البيانات وتشغيل المنصة
-      (مثل خدمات قواعد البيانات أو الاستضافة)،
-      وذلك بما يتوافق مع معايير الأمان وحماية البيانات.
-    </p>
-
-    <div class="hr"></div>
-
-    <h2>4) حماية البيانات</h2>
-    <p>
-      نلتزم باتخاذ إجراءات تقنية وتنظيمية مناسبة لحماية بيانات العملاء،
-      بما في ذلك تقييد الوصول واستخدام أنظمة تخزين آمنة.
-      ولا يتم الوصول للبيانات إلا لغرض تقديم الخدمة فقط.
-    </p>
-
-    <div class="hr"></div>
-
-    <h2>5) مشاركة البيانات مع جهات أخرى</h2>
-    <p>
-      لا نقوم ببيع بياناتك أو مشاركتها مع أطراف ثالثة لأغراض تسويقية.
-      قد تتم مشاركة الحد الأدنى من البيانات مع مزوّدي خدمات موثوقين (مثل الاستضافة أو البريد)
-      فقط لتقديم الخدمة وبما يلزم تشغيلها بأمان.
-    </p>
-
-    <div class="hr"></div>
-
-    <h2>6) الاحتفاظ بالبيانات</h2>
-    <p>
-      نحتفظ بالبيانات للمدة اللازمة لتقديم الخدمة وتحسينها أو للامتثال للمتطلبات النظامية.
-      عند انتفاء الحاجة، قد نقوم بحذف البيانات أو إخفاء هويتها قدر الإمكان.
-    </p>
-
-    <div class="hr"></div>
-
-    <h2>7) حقوق المستخدم</h2>
+    <h2>3) ما الذي لا نجمعه</h2>
     <ul>
-      <li>طلب تحديث أو تصحيح بياناتك.</li>
-      <li>طلب حذف بياناتك (عند عدم وجود متطلبات نظامية تمنع ذلك).</li>
-      <li>الاستفسار عن البيانات المسجلة لديك ضمن نطاق الخدمة.</li>
+      <li><b>لا نجمع ولا نطلب أي بيانات بنكية</b> داخل نموذج التسجيل.</li>
+      <li>لا نطلب كلمات مرور لحساباتك الشخصية.</li>
     </ul>
 
-    <div class="hr"></div>
-
-    <h2>8) روابط خارجية</h2>
+    <h2>4) مشاركة البيانات</h2>
     <p>
-      قد تتضمن المنصة روابط لخدمات أو مواقع خارجية. لسنا مسؤولين عن سياسات الخصوصية لتلك المواقع،
-      وننصح بمراجعتها بشكل مستقل.
+      لا نبيع بياناتك ولا نشاركها مع أطراف خارجية لأغراض تسويقية.
+      قد يتم الوصول للبيانات فقط لتشغيل الخدمة أو تقديم الدعم الفني عند الحاجة.
     </p>
 
-    <div class="hr"></div>
-
-    <h2>9) التواصل</h2>
-    <p class="muted">
-      لأي استفسار بخصوص الخصوصية أو طلب تعديل/حذف بياناتك، تواصل معنا عبر صفحة
-      <a href="contact.html">تواصل</a>.
+    <h2>5) حماية البيانات</h2>
+    <p>
+      نستخدم آليات حماية مناسبة (مثل مفاتيح وصول وخوادم آمنة) لحماية بياناتك من الوصول غير المصرح به.
+      ورغم ذلك، لا يمكن ضمان الأمان بنسبة 100% لأي نظام على الإنترنت.
     </p>
 
-    <div class="hr"></div>
-
-    <p class="muted" style="font-size:13px;margin:0">
-      ملاحظة: قد نقوم بتحديث هذه السياسة من وقت لآخر. سيتم نشر أي تحديث على هذه الصفحة مع تعديل تاريخ آخر تحديث.
+    <h2>6) مدة الاحتفاظ بالبيانات</h2>
+    <p>
+      نحتفظ بالبيانات للمدة اللازمة لتقديم الخدمة وإدارة الطلبات وتحسين الأداء،
+      ويمكن حذف البيانات عند الطلب إذا لم يكن هناك سبب نظامي للاحتفاظ بها.
     </p>
+
+    <h2>7) حقوقك</h2>
+    <ul>
+      <li>يحق لك طلب تعديل بياناتك إذا كانت غير دقيقة.</li>
+      <li>يحق لك طلب حذف بياناتك (حسب الإمكانية والمتطلبات النظامية).</li>
+      <li>يمكنك التواصل معنا عبر صفحة التواصل لأي استفسار.</li>
+    </ul>
+
+    <h2>8) التغييرات على السياسة</h2>
+    <p>
+      قد نقوم بتحديث هذه السياسة من وقت لآخر. عند التحديث سنقوم بتعديل تاريخ "آخر تحديث" أعلى الصفحة.
+    </p>
+
+    <div class="note">
+      <b>ملاحظة:</b> استخدامك للموقع يعني موافقتك على هذه السياسة.
+      إذا لم توافق، فضلاً لا تستخدم نموذج التسجيل.
+    </div>
   </section>
 </main>
 
-<footer>© 2026 SaaS Merchant Platform</footer>
+<footer>© 2026 منصة التاجر الذكية</footer>
 
 </body>
 </html>
