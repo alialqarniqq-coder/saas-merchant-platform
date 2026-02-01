@@ -143,8 +143,21 @@
 <footer>© 2026 منصة التاجر الذكية</footer>
 
 <script>
-  // ✅ ضع هنا رابط الـ Endpoint الخاص بالفنكشن من Supabase (Details → Endpoint URL)
-  const EDGE_FUNCTION_URL = "https://udsqvnvjktggdtzpoyts.supabase.co/functions/v1/smooth-action";
+  /**
+   * ✅ أهم تعديل:
+   * لازم تضيف apikey + Authorization باستخدام Publishable/Anon key
+   * (لا تستخدم Service Role داخل المتصفح نهائيًا)
+   */
+
+  // 1) رابط مشروعك في Supabase (Project URL)
+  const SUPABASE_URL = "https://udsqvnvjktggdtzpoyts.supabase.co";
+
+  // 2) الصق هنا الـ Publishable/Anon key (اللي يبدأ غالبًا بـ sb_publishable... أو eyJhbGci...)
+  //   - خذه من: Settings → API → (Publishable key) أو (Legacy anon public)
+  const SUPABASE_ANON_KEY = "PASTE_YOUR_PUBLISHABLE_OR_ANON_KEY_HERE";
+
+  // 3) Endpoint للفنكشن (اسم فنكشنك: smooth-action)
+  const EDGE_FUNCTION_URL = `${SUPABASE_URL}/functions/v1/smooth-action`;
 
   function setMsg(type, text){
     const el = document.getElementById("statusMsg");
@@ -153,15 +166,19 @@
   }
 
   function normalizePhone(value){
-    // أبسط تنظيف للأرقام: إزالة مسافات ورموز شائعة
     return (value || "")
       .replace(/\s+/g, "")
       .replace(/[()\-\+]/g, "");
   }
 
-  async function submitMerchant(){
+  function setLoading(isLoading){
     const btn = document.getElementById("submitBtn");
-    btn.disabled = true;
+    btn.disabled = isLoading;
+    btn.textContent = isLoading ? "جارٍ تسجيل النشاط..." : "تسجيل النشاط";
+  }
+
+  async function submitMerchant(){
+    setLoading(true);
 
     const business_name = document.getElementById("biz").value.trim();
     const business_type = document.getElementById("type").value.trim();
@@ -171,35 +188,72 @@
 
     if (!business_name || !email || !whatsapp){
       setMsg("bad", "فضلاً أدخل: اسم النشاط + الإيميل + رقم الواتساب.");
-      btn.disabled = false;
+      setLoading(false);
       return;
     }
 
+    // Timeout احترافي (حتى لو الشبكة علّقت)
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
     try{
+      if (!SUPABASE_ANON_KEY || SUPABASE_ANON_KEY.includes("PASTE_")){
+        setMsg("bad", "⚠️ لم يتم وضع مفتاح Publishable/Anon داخل الكود. الصقه ثم احفظ.");
+        setLoading(false);
+        return;
+      }
+
       const res = await fetch(EDGE_FUNCTION_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          business_name,
-          business_type,
-          city,
-          email,
-          whatsapp
-        })
+        headers: {
+          "Content-Type": "application/json",
+          // ✅ هذا اللي كان ناقصك غالبًا:
+          "apikey": SUPABASE_ANON_KEY,
+          "Authorization": "Bearer " + SUPABASE_ANON_KEY
+        },
+        body: JSON.stringify({ business_name, business_type, city, email, whatsapp }),
+        signal: controller.signal
       });
+
+      clearTimeout(timeoutId);
 
       const data = await res.json().catch(() => ({}));
 
-      if (res.ok && data && data.success){
+      // رسائل أوضح حسب الحالة
+      if (res.ok && (data.success === true || data.ok === true)){
         setMsg("ok", "✅ تم تسجيل نشاطك بنجاح. تم استلام الطلب وسيتم تنفيذ الإجراء آليًا.");
         document.getElementById("signupForm").reset();
-      } else {
-        setMsg("bad", "❌ لم يتم تسجيل الطلب الآن. حاول مرة أخرى بعد قليل.");
+        return;
       }
+
+      if (res.status === 401 || res.status === 403){
+        setMsg("bad", "❌ غير مصرح. تأكد أنك استخدمت Publishable/Anon key وليس Service Role.");
+        return;
+      }
+
+      if (res.status === 404){
+        setMsg("bad", "❌ رابط الفنكشن غير صحيح (تأكد من اسم smooth-action وأنه منشور).");
+        return;
+      }
+
+      if (res.status === 429){
+        setMsg("bad", "⏳ ضغط عالي على الخدمة. جرّب بعد دقيقة.");
+        return;
+      }
+
+      // لو السيرفر رجّع رسالة خطأ
+      const serverMsg = (data && (data.error || data.message)) ? (data.error || data.message) : "";
+      setMsg("bad", "❌ لم يتم تسجيل الطلب الآن. " + (serverMsg ? ("السبب: " + serverMsg) : "حاول مرة أخرى بعد قليل."));
     }catch(err){
-      setMsg("bad", "⚠️ تعذر الاتصال بالخادم. تأكد من الرابط أو الاتصال بالإنترنت.");
+      clearTimeout(timeoutId);
+
+      if (err && err.name === "AbortError"){
+        setMsg("bad", "⏱️ انتهت مهلة الاتصال. تأكد من الإنترنت وحاول مرة أخرى.");
+      } else {
+        setMsg("bad", "⚠️ تعذر الاتصال بالخادم. تأكد من الرابط أو الاتصال بالإنترنت.");
+      }
     }finally{
-      btn.disabled = false;
+      setLoading(false);
     }
   }
 </script>
