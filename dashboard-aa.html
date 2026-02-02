@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>لوحة التحكم A-A</title>
+  <style>
+    :root{
+      --brand:#0f4c81; --brand-dark:#0b3a63; --bg:#f5f7fa; --card:#fff;
+      --text:#111827; --muted:#6b7280; --line:#e5e7eb; --ok:#16a34a; --bad:#b42318;
+      --shadow:0 10px 24px rgba(0,0,0,.08);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,system-ui,-apple-system,Segoe UI; background:var(--bg); color:var(--text)}
+    header{background:var(--brand); color:#fff; padding:18px 14px; text-align:center}
+    header h1{margin:0;font-size:20px}
+    header p{margin:6px 0 0;opacity:.95;font-size:13px}
+    main{max-width:1100px; margin:14px auto; padding:0 12px}
+
+    .card{background:var(--card); border-radius:14px; padding:14px; box-shadow:var(--shadow); border:1px solid rgba(229,231,235,.7)}
+    .grid{display:grid; gap:12px; grid-template-columns:1fr}
+    @media(min-width:900px){ .grid{grid-template-columns:1.2fr .8fr} }
+
+    .muted{color:var(--muted); margin:0; line-height:1.7}
+    label{display:block;margin:10px 0 6px;font-weight:700;font-size:13px}
+    input,select{
+      width:100%;padding:10px 12px;border-radius:10px;border:1px solid #d1d5db;
+      font-size:15px;background:#fff; outline:none;
+    }
+    input:focus,select:focus{border-color:rgba(15,76,129,.55); box-shadow:0 0 0 4px rgba(15,76,129,.10)}
+    .row{display:grid; gap:10px; grid-template-columns:1fr}
+    @media(min-width:900px){ .row{grid-template-columns:1fr 1fr} }
+
+    .actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+    .btn{
+      background:var(--brand);color:#fff;border:none; padding:10px 14px;border-radius:10px;
+      font-weight:800;font-size:14px;cursor:pointer;
+    }
+    .btn:disabled{opacity:.65;cursor:not-allowed}
+    .btn.light{background:#fff;color:#111827;border:1px solid var(--line)}
+    .btn.light:hover{background:#f9fafb}
+
+    table{width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border-radius:12px; border:1px solid var(--line); background:#fff}
+    thead th{
+      background:#f9fafb; text-align:right; padding:10px; font-size:12px; color:#374151; border-bottom:1px solid var(--line);
+      position:sticky; top:0; z-index:1;
+    }
+    tbody td{padding:10px; border-bottom:1px solid #f1f5f9; font-size:13px; vertical-align:top}
+    tbody tr:hover{background:#fbfdff}
+
+    .pill{display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px;border:1px solid var(--line); color:#111827; background:#fff}
+    .small{font-size:12px;color:var(--muted)}
+
+    .msg{display:none; margin-top:10px; padding:10px; border-radius:10px; font-weight:700; border:1px solid var(--line)}
+    .msg.ok{display:block; background:#eaf7ef; color:var(--ok); border-color:rgba(22,163,74,.25)}
+    .msg.bad{display:block; background:#fdecec; color:var(--bad); border-color:rgba(180,35,24,.25)}
+
+    .stats{display:grid; gap:10px; grid-template-columns:1fr 1fr}
+    .stat{border:1px solid var(--line); border-radius:12px; padding:12px; background:#fff}
+    .stat .k{font-size:12px;color:var(--muted)}
+    .stat .v{font-size:20px;font-weight:800;margin-top:6px}
+
+    .lock{
+      display:none;
+      max-width:720px; margin:22px auto; padding:0 12px;
+    }
+    footer{margin:14px 0; text-align:center; color:var(--muted); font-size:12px}
+    a{color:var(--brand);text-decoration:none;font-weight:800}
+    a:hover{text-decoration:underline}
+    .ltr{direction:ltr; unicode-bidi:bidi-override}
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>لوحة التحكم A-A</h1>
+  <p>عربية بالكامل — مع رابط سري للوصول</p>
+</header>
+
+<!-- شاشة منع الدخول -->
+<section id="lockScreen" class="lock">
+  <div class="card">
+    <h2 style="margin:0 0 8px">غير مصرح بالدخول</h2>
+    <p class="muted">
+      هذه صفحة داخلية. افتحها بالرابط السري الصحيح.<br>
+      مثال: <span class="ltr">dashboard-aa.html?key=XXXX</span>
+    </p>
+  </div>
+</section>
+
+<main id="app" class="grid" style="display:none;">
+
+  <section class="card">
+    <h2 style="margin:0 0 8px">قائمة التجار المسجلين</h2>
+    <p class="muted">بحث + تصفية + تصدير CSV.</p>
+
+    <div class="row" style="margin-top:10px">
+      <div>
+        <label>بحث عام</label>
+        <input id="q" placeholder="ابحث: اسم / مدينة / واتساب / إيميل" />
+      </div>
+      <div>
+        <label>نوع النشاط</label>
+        <select id="type">
+          <option value="">الكل</option>
+          <option value="أثاث">أثاث</option>
+          <option value="مطعم / كوفي">مطعم / كوفي</option>
+          <option value="مغسلة / صالون">مغسلة / صالون</option>
+          <option value="سوبرماركت">سوبرماركت</option>
+          <option value="عقارات">عقارات</option>
+          <option value="أخرى">أخرى</option>
+        </select>
+      </div>
+      <div>
+        <label>المدينة</label>
+        <input id="city" placeholder="مثال: أبها / خميس مشيط" />
+      </div>
+      <div>
+        <label>الترتيب</label>
+        <select id="sort">
+          <option value="created_at.desc">الأحدث أولاً</option>
+          <option value="created_at.asc">الأقدم أولاً</option>
+          <option value="business_name.asc">اسم النشاط (أ - ي)</option>
+          <option value="business_name.desc">اسم النشاط (ي - أ)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn" id="refreshBtn" onclick="loadMerchants()">تحديث القائمة</button>
+      <button class="btn light" onclick="downloadCSV()">تصدير CSV</button>
+      <button class="btn light" onclick="clearFilters()">مسح الفلاتر</button>
+    </div>
+
+    <div id="statusMsg" class="msg"></div>
+
+    <div style="margin-top:12px; overflow:auto; max-height:60vh;">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>اسم النشاط</th>
+            <th>النوع</th>
+            <th>المدينة</th>
+            <th>الإيميل</th>
+            <th>واتساب</th>
+            <th>تاريخ التسجيل</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <tr><td colspan="7" class="small">جاري التحميل…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="small" style="margin-top:10px">
+      إذا لم تظهر بيانات: غالبًا السبب سياسات RLS (نضبطها مباشرة بالخطوة القادمة).
+    </div>
+  </section>
+
+  <aside class="card">
+    <h2 style="margin:0 0 8px">إحصائيات سريعة</h2>
+    <p class="muted">حسب النتائج المعروضة الآن.</p>
+
+    <div class="stats" style="margin-top:10px">
+      <div class="stat">
+        <div class="k">عدد السجلات الظاهرة</div>
+        <div class="v" id="statVisible">0</div>
+      </div>
+      <div class="stat">
+        <div class="k">تسجيلات اليوم</div>
+        <div class="v" id="statToday">0</div>
+      </div>
+      <div class="stat">
+        <div class="k">آخر 7 أيام</div>
+        <div class="v" id="statWeek">0</div>
+      </div>
+      <div class="stat">
+        <div class="k">آخر تحديث</div>
+        <div class="v" style="font-size:14px;font-weight:700" id="statTime">—</div>
+      </div>
+    </div>
+
+    <div style="margin-top:12px;border-top:1px dashed var(--line);padding-top:12px" class="small">
+      ⚠️ “الرابط السري” يمنع الدخول العشوائي لكنه ليس حماية قوية 100%.<br>
+      ✅ لاحقًا نحوله لدخول رسمي (Login) أو لوحة محمية عبر Edge Function.
+    </div>
+  </aside>
+
+</main>
+
+<footer>© 2026 منصة التاجر الذكية</footer>
+
+<script>
+  // ========= إعدادات Supabase =========
+  const SUPABASE_URL = "https://udsqvnvjktggdtzpoyts.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkc3F2bnZqa3RnZ2R0enBveXRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk4NjMyMDEsImV4cCI6MjA4NTQzOTIwMX0.le_aDD0cB7PCg_d6bH_rvGfGagqriEN1oinXV5N-frM"; // ضع المفتاح الكامل هنا (سطر واحد)
+  const MERCHANTS_TABLE = "merchants";
+
+  // ========= الرابط السري =========
+  // غيّرها إلى كلمة طويلة جدًا (مثال: AAx9-...-...-2026)
+  const SECRET_KEY = "AA-ALQARNI-2026-9f3a1c-7b21-SECRET";
+
+  // ========= حماية بالـ Query String =========
+  (function gate(){
+    const params = new URLSearchParams(location.search);
+    const k = params.get("key") || "";
+    const ok = (k === SECRET_KEY);
+
+    const app = document.getElementById("app");
+    const lock = document.getElementById("lockScreen");
+
+    if (!ok){
+      lock.style.display = "block";
+      app.style.display = "none";
+      return;
+    }
+
+    lock.style.display = "none";
+    app.style.display = "grid";
+  })();
+
+  // ========= وظائف =========
+  let lastRows = [];
+
+  function setMsg(type, text){
+    const el = document.getElementById("statusMsg");
+    el.className = "msg " + (type === "ok" ? "ok" : "bad");
+    el.textContent = text;
+  }
+
+  function fmtDate(iso){
+    try{
+      const d = new Date(iso);
+      return d.toLocaleString("ar-SA", { dateStyle:"medium", timeStyle:"short" });
+    }catch(e){ return iso || ""; }
+  }
+
+  function normalizePhone(v){
+    return (v||"").toString().replace(/\s+/g,"").replace(/[()\-\+]/g,"");
+  }
+
+  function buildQuery(){
+    const q = document.getElementById("q").value.trim();
+    const type = document.getElementById("type").value.trim();
+    const city = document.getElementById("city").value.trim();
+    const sort = document.getElementById("sort").value;
+
+    const params = new URLSearchParams();
+    params.set("select", "id,business_name,business_type,city,email,whatsapp,created_at");
+    params.set("limit", "500");
+
+    const [col, dir] = sort.split(".");
+    params.set("order", `${col}.${dir}`);
+
+    if (type) params.set("business_type", `eq.${type}`);
+    if (city) params.set("city", `ilike.*${city}*`);
+
+    if (q){
+      const qq = q.replace(/[%]/g, "");
+      params.set("or",
+        `(business_name.ilike.*${qq}*,city.ilike.*${qq}*,email.ilike.*${qq}*,whatsapp.ilike.*${qq}*)`
+      );
+    }
+    return params.toString();
+  }
+
+  async function loadMerchants(){
+    const btn = document.getElementById("refreshBtn");
+    btn.disabled = true;
+    btn.textContent = "جاري التحميل…";
+
+    if (!SUPABASE_ANON_KEY || SUPABASE_ANON_KEY.includes("PASTE_")){
+      setMsg("bad","⚠️ ضع anon/public key الكامل داخل الملف (سطر واحد).");
+      btn.disabled = false; btn.textContent = "تحديث القائمة";
+      return;
+    }
+
+    const url = `${SUPABASE_URL}/rest/v1/${MERCHANTS_TABLE}?${buildQuery()}`;
+
+    try{
+      const res = await fetch(url, {
+        headers: {
+          "apikey": SUPABASE_ANON_KEY,
+          "Authorization": "Bearer " + SUPABASE_ANON_KEY
+        }
+      });
+
+      const text = await res.text();
+      let data = [];
+      try{ data = JSON.parse(text); }catch(e){}
+
+      if (!res.ok){
+        setMsg("bad", `❌ فشل جلب البيانات (${res.status}). غالبًا RLS/Policies أو اسم الجدول. جزء من الرد: ${text.slice(0,200)}`);
+        renderRows([]);
+        updateStats([]);
+        return;
+      }
+
+      lastRows = Array.isArray(data) ? data : [];
+      renderRows(lastRows);
+      updateStats(lastRows);
+      setMsg("ok", `✅ تم تحميل ${lastRows.length} سجل.`);
+    }catch(err){
+      setMsg("bad", "⚠️ تعذر الاتصال. تأكد من الإنترنت أو أن Supabase ليس في صيانة.");
+      renderRows([]);
+      updateStats([]);
+    }finally{
+      btn.disabled = false;
+      btn.textContent = "تحديث القائمة";
+    }
+  }
+
+  function renderRows(rows){
+    const tbody = document.getElementById("tbody");
+    if (!rows || rows.length === 0){
+      tbody.innerHTML = `<tr><td colspan="7" class="small">لا توجد بيانات.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = rows.map((r, i) => {
+      const wa = normalizePhone(r.whatsapp);
+      const waLink = wa ? `https://wa.me/966${wa.replace(/^0/,'')}` : "#";
+      return `
+        <tr>
+          <td>${i+1}</td>
+          <td><strong>${(r.business_name||"")}</strong></td>
+          <td><span class="pill">${(r.business_type||"")}</span></td>
+          <td>${(r.city||"")}</td>
+          <td class="ltr">${(r.email||"")}</td>
+          <td class="ltr">
+            ${wa ? `<a href="${waLink}" target="_blank" rel="noopener">${wa}</a>` : ""}
+          </td>
+          <td>${fmtDate(r.created_at)}</td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  function updateStats(rows){
+    const now = new Date();
+    const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const startWeek = new Date(startToday);
+    startWeek.setDate(startWeek.getDate() - 6);
+
+    const todayCount = rows.filter(r => r.created_at && new Date(r.created_at) >= startToday).length;
+    const weekCount = rows.filter(r => r.created_at && new Date(r.created_at) >= startWeek).length;
+
+    document.getElementById("statVisible").textContent = rows.length;
+    document.getElementById("statToday").textContent = todayCount;
+    document.getElementById("statWeek").textContent = weekCount;
+    document.getElementById("statTime").textContent = new Date().toLocaleString("ar-SA");
+  }
+
+  function clearFilters(){
+    document.getElementById("q").value = "";
+    document.getElementById("type").value = "";
+    document.getElementById("city").value = "";
+    document.getElementById("sort").value = "created_at.desc";
+    loadMerchants();
+  }
+
+  function downloadCSV(){
+    if (!lastRows || lastRows.length === 0){
+      setMsg("bad","لا يوجد بيانات لتصديرها.");
+      return;
+    }
+    const headers = ["id","business_name","business_type","city","email","whatsapp","created_at"];
+    const escape = (v) => `"${(v ?? "").toString().replace(/"/g,'""')}"`;
+    const lines = [
+      headers.join(","),
+      ...lastRows.map(r => headers.map(h => escape(r[h])).join(","))
+    ];
+    const blob = new Blob([lines.join("\n")], {type:"text/csv;charset=utf-8"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `التجار_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  // تحميل تلقائي إذا كان الرابط السري صحيح
+  (function auto(){
+    const params = new URLSearchParams(location.search);
+    if ((params.get("key")||"") === SECRET_KEY) loadMerchants();
+  })();
+</script>
+
+</body>
+</html>
