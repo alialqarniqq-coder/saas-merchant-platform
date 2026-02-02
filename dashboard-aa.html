@@ -386,5 +386,149 @@
   })();
 </script>
 
+<script>
+/* =========================
+   A-A SECOND SECURITY LAYER
+   ========================= */
+
+(function () {
+  // 1) كلمة المرور (غيرها براحتك)
+  const DASH_PASSWORD = "AA@2026!Ali";
+
+  // 2) اسم التخزين المحلي (علشان ما يطلبها كل مرة)
+  const STORAGE_KEY = "AA_DASH_AUTH_OK";
+
+  // 3) لو تبي تجبره يطلب كلمة مرور كل مرة، خلها false
+  const REMEMBER_ME = true;
+
+  // 4) شاشة قفل كاملة
+  const lockHtml = `
+    <div id="aaLock" style="
+      position:fixed; inset:0; z-index:999999;
+      background:linear-gradient(180deg,#0b3a63 0%, #0f4c81 100%);
+      display:flex; align-items:center; justify-content:center;
+      padding:18px; direction:rtl; font-family:system-ui,-apple-system,'Segoe UI',Tahoma;
+    ">
+      <div style="
+        width:min(520px,100%);
+        background:#fff; border-radius:18px; padding:20px 18px;
+        box-shadow:0 20px 60px rgba(0,0,0,.25);
+      ">
+        <div style="text-align:center; margin-bottom:14px;">
+          <div style="font-size:22px; font-weight:800; color:#0b3a63;">لوحة التحكم A-A</div>
+          <div style="font-size:14px; color:#5b6b7a; margin-top:4px;">
+            طبقة أمان إضافية — أدخل كلمة المرور للمتابعة
+          </div>
+        </div>
+
+        <label style="display:block; font-weight:700; margin:12px 0 8px; color:#111827;">
+          كلمة المرور
+        </label>
+        <div style="display:flex; gap:10px;">
+          <input id="aaPass" type="password" placeholder="اكتب كلمة المرور هنا"
+            style="flex:1; padding:12px 14px; border:1px solid #d1d5db; border-radius:12px; font-size:16px; outline:none;"
+          />
+          <button id="aaGo" style="
+            padding:12px 16px; border:none; border-radius:12px;
+            background:#0f4c81; color:#fff; font-weight:800; font-size:15px; cursor:pointer;
+          ">دخول</button>
+        </div>
+
+        <div id="aaMsg" style="margin-top:10px; color:#b42318; font-weight:700; display:none;">
+          كلمة المرور غير صحيحة.
+        </div>
+
+        <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+          <button id="aaLogout" style="
+            padding:10px 12px; border-radius:12px; border:1px solid #e5e7eb;
+            background:#f9fafb; cursor:pointer; font-weight:700;
+          ">إلغاء حفظ الدخول</button>
+
+          <button id="aaHideKey" style="
+            padding:10px 12px; border-radius:12px; border:1px solid #e5e7eb;
+            background:#f9fafb; cursor:pointer; font-weight:700;
+          ">إخفاء المفتاح من الرابط</button>
+        </div>
+
+        <div style="margin-top:14px; font-size:12px; color:#6b7280; line-height:1.7;">
+          • إذا كنت على جهازك الخاص يمكنك ترك الحفظ مفعّل.<br>
+          • زر “إخفاء المفتاح” يحذف ?key من شريط العنوان بعد الدخول (أفضل).
+        </div>
+      </div>
+    </div>
+  `;
+
+  function hasAuth() {
+    return REMEMBER_ME && localStorage.getItem(STORAGE_KEY) === "1";
+  }
+
+  function setAuth() {
+    if (REMEMBER_ME) localStorage.setItem(STORAGE_KEY, "1");
+  }
+
+  function clearAuth() {
+    localStorage.removeItem(STORAGE_KEY);
+  }
+
+  function hideKeyFromUrl() {
+    try {
+      const url = new URL(window.location.href);
+      if (url.searchParams.has("key")) {
+        url.searchParams.delete("key");
+        window.history.replaceState({}, "", url.toString());
+      }
+    } catch (e) {}
+  }
+
+  // إذا مصادق قبل كذا → لا نقفل
+  if (hasAuth()) {
+    // (اختياري) يخفي المفتاح حتى لو مصادق
+    hideKeyFromUrl();
+    return;
+  }
+
+  // أقفل الصفحة إلى أن يتم التحقق
+  document.documentElement.style.overflow = "hidden";
+  document.body.insertAdjacentHTML("beforeend", lockHtml);
+
+  const passEl = document.getElementById("aaPass");
+  const goEl = document.getElementById("aaGo");
+  const msgEl = document.getElementById("aaMsg");
+  const lockEl = document.getElementById("aaLock");
+  const logoutEl = document.getElementById("aaLogout");
+  const hideKeyEl = document.getElementById("aaHideKey");
+
+  function tryLogin() {
+    msgEl.style.display = "none";
+    const val = (passEl.value || "").trim();
+    if (val === DASH_PASSWORD) {
+      setAuth();
+      hideKeyFromUrl();
+      lockEl.remove();
+      document.documentElement.style.overflow = "";
+    } else {
+      msgEl.style.display = "block";
+      passEl.focus();
+    }
+  }
+
+  goEl.addEventListener("click", tryLogin);
+  passEl.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") tryLogin();
+  });
+
+  logoutEl.addEventListener("click", () => {
+    clearAuth();
+    msgEl.style.display = "none";
+    passEl.value = "";
+    passEl.focus();
+  });
+
+  hideKeyEl.addEventListener("click", hideKeyFromUrl);
+
+  // تركيز تلقائي
+  setTimeout(() => passEl.focus(), 200);
+})();
+</script>
 </body>
 </html>
