@@ -60,24 +60,26 @@
     .stat .k{font-size:12px;color:var(--muted)}
     .stat .v{font-size:20px;font-weight:800;margin-top:6px}
 
-    .lock{
-      display:none;
-      max-width:720px; margin:22px auto; padding:0 12px;
-    }
     footer{margin:14px 0; text-align:center; color:var(--muted); font-size:12px}
     a{color:var(--brand);text-decoration:none;font-weight:800}
     a:hover{text-decoration:underline}
     .ltr{direction:ltr; unicode-bidi:bidi-override}
+
+    /* شاشة منع الدخول */
+    .lock{
+      display:none;
+      max-width:720px; margin:22px auto; padding:0 12px;
+    }
   </style>
 </head>
 <body>
 
 <header>
   <h1>لوحة التحكم A-A</h1>
-  <p>عربية بالكامل — مع رابط سري للوصول</p>
+  <p>عربية بالكامل — مع رابط سري + رقم سري + جلسة 20 دقيقة</p>
 </header>
 
-<!-- شاشة منع الدخول -->
+<!-- شاشة منع الدخول (إذا المفتاح غير صحيح) -->
 <section id="lockScreen" class="lock">
   <div class="card">
     <h2 style="margin:0 0 8px">غير مصرح بالدخول</h2>
@@ -88,6 +90,7 @@
   </div>
 </section>
 
+<!-- التطبيق (مخفي حتى ينجح المفتاح + كلمة المرور) -->
 <main id="app" class="grid" style="display:none;">
 
   <section class="card">
@@ -130,6 +133,7 @@
       <button class="btn" id="refreshBtn" onclick="loadMerchants()">تحديث القائمة</button>
       <button class="btn light" onclick="downloadCSV()">تصدير CSV</button>
       <button class="btn light" onclick="clearFilters()">مسح الفلاتر</button>
+      <button class="btn light" onclick="manualLogout()">تسجيل خروج</button>
     </div>
 
     <div id="statusMsg" class="msg"></div>
@@ -154,7 +158,7 @@
     </div>
 
     <div class="small" style="margin-top:10px">
-      إذا لم تظهر بيانات: غالبًا السبب سياسات RLS (نضبطها مباشرة بالخطوة القادمة).
+      إذا لم تظهر بيانات: غالبًا السبب سياسات RLS (نضبطها لاحقًا).
     </div>
   </section>
 
@@ -182,8 +186,8 @@
     </div>
 
     <div style="margin-top:12px;border-top:1px dashed var(--line);padding-top:12px" class="small">
-      ⚠️ “الرابط السري” يمنع الدخول العشوائي لكنه ليس حماية قوية 100%.<br>
-      ✅ لاحقًا نحوله لدخول رسمي (Login) أو لوحة محمية عبر Edge Function.
+      ⚠️ هذه حماية على المتصفح (Front-end).<br>
+      ✅ للحماية القوية لاحقًا: Supabase Auth أو Edge Function.
     </div>
   </aside>
 
@@ -192,35 +196,219 @@
 <footer>© 2026 منصة التاجر الذكية</footer>
 
 <script>
-  // ========= إعدادات Supabase =========
+/* =========================================================
+   A-A SECURITY (موحد): 1) مفتاح بالرابط 2) كلمة مرور 3) 20 دقيقة
+   ========================================================= */
+
+  // ✅ عدّل القيم الثلاث التالية فقط:
   const SUPABASE_URL = "https://udsqvnvjktggdtzpoyts.supabase.co";
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkc3F2bnZqa3RnZ2R0enBveXRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk4NjMyMDEsImV4cCI6MjA4NTQzOTIwMX0.le_aDD0cB7PCg_d6bH_rvGfGagqriEN1oinXV5N-frM"; // ضع المفتاح الكامل هنا (سطر واحد)
   const MERCHANTS_TABLE = "merchants";
 
-  // ========= الرابط السري =========
-  // غيّرها إلى كلمة طويلة جدًا (مثال: AAx9-...-...-2026)
-  const SECRET_KEY = "AA-ALQARNI-2026-9f3a1c-7b21-SECRET";
+  const SECRET_KEY = "AA-ALQARNI-2026-9f3a1c-7b21-SECRET";     // نفس key اللي تحطه في الرابط
+  const DASH_PASSWORD = "2201647";    // رقم/كلمة المرور للوحة
 
-  // ========= حماية بالـ Query String =========
-  (function gate(){
+  // مدة الجلسة بعد إدخال كلمة المرور
+  const SESSION_MINUTES = 20;
+
+  // تخزين الجلسة في sessionStorage (ينتهي بإغلاق التبويب + أفضل من localStorage)
+  const SESS_UNTIL_KEY = "AA_DASH_UNTIL_MS";
+
+  function nowMs(){ return Date.now(); }
+
+  function isSessionValid(){
+    const until = parseInt(sessionStorage.getItem(SESS_UNTIL_KEY) || "0", 10);
+    return until > nowMs();
+  }
+
+  function startSession(){
+    const until = nowMs() + SESSION_MINUTES * 60 * 1000;
+    sessionStorage.setItem(SESS_UNTIL_KEY, String(until));
+  }
+
+  function clearSession(){
+    sessionStorage.removeItem(SESS_UNTIL_KEY);
+  }
+
+  function hideKeyFromUrl(){
+    try{
+      const url = new URL(location.href);
+      if (url.searchParams.has("key")){
+        url.searchParams.delete("key");
+        history.replaceState({}, "", url.toString());
+      }
+    }catch(e){}
+  }
+
+  // شاشة كلمة المرور (Overlay)
+  function showPasswordLock(){
+    // امنع السكرول خلف الشاشة
+    document.documentElement.style.overflow = "hidden";
+
+    const lockHtml = `
+      <div id="aaLock" style="
+        position:fixed; inset:0; z-index:999999;
+        background:linear-gradient(180deg,#0b3a63 0%, #0f4c81 100%);
+        display:flex; align-items:center; justify-content:center;
+        padding:18px; direction:rtl; font-family:system-ui,-apple-system,'Segoe UI',Tahoma;
+      ">
+        <div style="
+          width:min(520px,100%);
+          background:#fff; border-radius:18px; padding:20px 18px;
+          box-shadow:0 20px 60px rgba(0,0,0,.25);
+        ">
+          <div style="text-align:center; margin-bottom:14px;">
+            <div style="font-size:22px; font-weight:800; color:#0b3a63;">لوحة التحكم A-A</div>
+            <div style="font-size:14px; color:#5b6b7a; margin-top:4px;">
+              أدخل كلمة المرور للمتابعة (تنتهي الجلسة بعد ${SESSION_MINUTES} دقيقة)
+            </div>
+          </div>
+
+          <label style="display:block; font-weight:700; margin:12px 0 8px; color:#111827;">
+            كلمة المرور
+          </label>
+          <div style="display:flex; gap:10px;">
+            <input id="aaPass" type="password" placeholder="اكتب كلمة المرور هنا"
+              style="flex:1; padding:12px 14px; border:1px solid #d1d5db; border-radius:12px; font-size:16px; outline:none;"
+            />
+            <button id="aaGo" style="
+              padding:12px 16px; border:none; border-radius:12px;
+              background:#0f4c81; color:#fff; font-weight:800; font-size:15px; cursor:pointer;
+            ">دخول</button>
+          </div>
+
+          <div id="aaMsg" style="margin-top:10px; color:#b42318; font-weight:700; display:none;">
+            كلمة المرور غير صحيحة.
+          </div>
+
+          <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+            <button id="aaHideKey" style="
+              padding:10px 12px; border-radius:12px; border:1px solid #e5e7eb;
+              background:#f9fafb; cursor:pointer; font-weight:700;
+            ">إخفاء المفتاح من الرابط</button>
+
+            <button id="aaExit" style="
+              padding:10px 12px; border-radius:12px; border:1px solid #e5e7eb;
+              background:#f9fafb; cursor:pointer; font-weight:700;
+            ">إلغاء</button>
+          </div>
+
+          <div style="margin-top:14px; font-size:12px; color:#6b7280; line-height:1.7;">
+            • “إخفاء المفتاح” يحذف ?key من شريط العنوان بعد الدخول.<br>
+            • الجلسة تنتهي تلقائيًا بعد ${SESSION_MINUTES} دقيقة.
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.insertAdjacentHTML("beforeend", lockHtml);
+
+    const passEl = document.getElementById("aaPass");
+    const goEl = document.getElementById("aaGo");
+    const msgEl = document.getElementById("aaMsg");
+    const lockEl = document.getElementById("aaLock");
+    const hideKeyEl = document.getElementById("aaHideKey");
+    const exitEl = document.getElementById("aaExit");
+
+    function closeLock(){
+      if (lockEl) lockEl.remove();
+      document.documentElement.style.overflow = "";
+    }
+
+    function startAutoLogoutTimer(){
+      // كل ثانية نراجع — بسيط وواضح
+      const timer = setInterval(() => {
+        if (!isSessionValid()){
+          clearInterval(timer);
+          clearSession();
+          alert("انتهت الجلسة (20 دقيقة). سيتم تسجيل الخروج.");
+          location.reload();
+        }
+      }, 1000);
+    }
+
+    function afterSuccess(){
+      startSession();
+      hideKeyFromUrl();
+      closeLock();
+      showApp();
+      loadMerchants();
+      startAutoLogoutTimer();
+    }
+
+    function tryLogin(){
+      msgEl.style.display = "none";
+      const val = (passEl.value || "").trim();
+      if (val === DASH_PASSWORD){
+        afterSuccess();
+      } else {
+        msgEl.style.display = "block";
+        passEl.focus();
+      }
+    }
+
+    goEl.addEventListener("click", tryLogin);
+    passEl.addEventListener("keydown", (e) => { if (e.key === "Enter") tryLogin(); });
+    hideKeyEl.addEventListener("click", hideKeyFromUrl);
+    exitEl.addEventListener("click", () => { closeLock(); });
+
+    setTimeout(() => passEl.focus(), 200);
+  }
+
+  function showApp(){
+    document.getElementById("lockScreen").style.display = "none";
+    document.getElementById("app").style.display = "grid";
+  }
+
+  function showKeyDenied(){
+    document.getElementById("lockScreen").style.display = "block";
+    document.getElementById("app").style.display = "none";
+  }
+
+  // Gate 1: المفتاح في الرابط
+  function isKeyOk(){
     const params = new URLSearchParams(location.search);
     const k = params.get("key") || "";
-    const ok = (k === SECRET_KEY);
+    return k === SECRET_KEY;
+  }
 
-    const app = document.getElementById("app");
-    const lock = document.getElementById("lockScreen");
-
-    if (!ok){
-      lock.style.display = "block";
-      app.style.display = "none";
+  // Gate bootstrap
+  (function boot(){
+    if (!isKeyOk()){
+      showKeyDenied();
       return;
     }
 
-    lock.style.display = "none";
-    app.style.display = "grid";
+    // مفتاح صحيح: لا تعرض التطبيق إلا بعد كلمة المرور أو جلسة صالحة
+    if (isSessionValid()){
+      hideKeyFromUrl();
+      showApp();
+      loadMerchants();
+      // راقب انتهاء الجلسة
+      setInterval(() => {
+        if (!isSessionValid()){
+          clearSession();
+          alert("انتهت الجلسة (20 دقيقة). سيتم تسجيل الخروج.");
+          location.reload();
+        }
+      }, 1000);
+      return;
+    }
+
+    // لا توجد جلسة → اطلب كلمة المرور
+    showPasswordLock();
   })();
 
-  // ========= وظائف =========
+  // زر تسجيل الخروج اليدوي
+  function manualLogout(){
+    clearSession();
+    location.reload();
+  }
+
+/* =========================================================
+   وظائف Supabase + جدول التجار
+   ========================================================= */
+
   let lastRows = [];
 
   function setMsg(type, text){
@@ -270,7 +458,7 @@
     btn.disabled = true;
     btn.textContent = "جاري التحميل…";
 
-    if (!SUPABASE_ANON_KEY || SUPABASE_ANON_KEY.includes("PASTE_")){
+    if (!SUPABASE_ANON_KEY || SUPABASE_ANON_KEY.includes("PUT_YOUR")){
       setMsg("bad","⚠️ ضع anon/public key الكامل داخل الملف (سطر واحد).");
       btn.disabled = false; btn.textContent = "تحديث القائمة";
       return;
@@ -378,212 +566,7 @@
     a.click();
     URL.revokeObjectURL(a.href);
   }
-
-  // تحميل تلقائي إذا كان الرابط السري صحيح
-  (function auto(){
-    const params = new URLSearchParams(location.search);
-    if ((params.get("key")||"") === SECRET_KEY) loadMerchants();
-  })();
 </script>
 
-<script>
-<script>
-/* =========================
-   A-A SECOND SECURITY LAYER + 20 MIN SESSION
-   ========================= */
-
-(function () {
-  // ✅ 1) كلمة المرور (غيرها)
-  const DASH_PASSWORD = "2201647";
-
-  // ✅ 2) مدة الجلسة: 20 دقيقة
-  const SESSION_MINUTES = 20;
-  const SESSION_MS = SESSION_MINUTES * 60 * 1000;
-
-  // ✅ 3) التخزين
-  const STORAGE_OK = "AA_DASH_AUTH_OK";
-  const STORAGE_EXP = "AA_DASH_AUTH_EXP"; // وقت الانتهاء
-
-  // ✅ 4) تذكرني (إذا false = يطلب كلمة مرور كل مرة)
-  const REMEMBER_ME = false;
-
-  // ✅ 5) تحقق أن المفتاح السري صحيح أولاً
-  function isKeyValid() {
-    try {
-      const params = new URLSearchParams(location.search);
-      const k = params.get("key") || "";
-      return (typeof SECRET_KEY !== "undefined") && (k === SECRET_KEY);
-    } catch (e) { return false; }
-  }
-
-  // إذا المفتاح غير صحيح → لا نعرض طبقة كلمة المرور أصلاً
-  if (!isKeyValid()) return;
-
-  function now() { return Date.now(); }
-
-  function getExp() {
-    const v = parseInt(localStorage.getItem(STORAGE_EXP) || "0", 10);
-    return Number.isFinite(v) ? v : 0;
-  }
-
-  function clearAuth() {
-    localStorage.removeItem(STORAGE_OK);
-    localStorage.removeItem(STORAGE_EXP);
-  }
-
-  function hasAuth() {
-    if (!REMEMBER_ME) return false;
-    if (localStorage.getItem(STORAGE_OK) !== "1") return false;
-
-    const exp = getExp();
-    if (!exp || now() > exp) {
-      clearAuth();
-      return false;
-    }
-    return true;
-  }
-
-  function setAuth() {
-    if (!REMEMBER_ME) return;
-    localStorage.setItem(STORAGE_OK, "1");
-    localStorage.setItem(STORAGE_EXP, String(now() + SESSION_MS));
-  }
-
-  function hideKeyFromUrl() {
-    try {
-      const url = new URL(window.location.href);
-      if (url.searchParams.has("key")) {
-        url.searchParams.delete("key");
-        window.history.replaceState({}, "", url.toString());
-      }
-    } catch (e) {}
-  }
-
-  function startAutoLogoutTimer() {
-    const exp = getExp();
-    const left = Math.max(0, exp - now());
-    if (!left) return;
-
-    setTimeout(() => {
-      clearAuth();
-      location.reload(); // يرجع يطلب كلمة المرور
-    }, left);
-  }
-
-  // لو مصادق قبل كذا وما انتهت الجلسة → نخفي المفتاح ونبدأ المؤقت
-  if (hasAuth()) {
-    hideKeyFromUrl();
-    startAutoLogoutTimer();
-    return;
-  }
-
-  // شاشة القفل
-  const lockHtml = `
-    <div id="aaLock" style="
-      position:fixed; inset:0; z-index:999999;
-      background:linear-gradient(180deg,#0b3a63 0%, #0f4c81 100%);
-      display:flex; align-items:center; justify-content:center;
-      padding:18px; direction:rtl; font-family:system-ui,-apple-system,'Segoe UI',Tahoma;
-    ">
-      <div style="
-        width:min(520px,100%);
-        background:#fff; border-radius:18px; padding:20px 18px;
-        box-shadow:0 20px 60px rgba(0,0,0,.25);
-      ">
-        <div style="text-align:center; margin-bottom:14px;">
-          <div style="font-size:22px; font-weight:800; color:#0b3a63;">لوحة التحكم A-A</div>
-          <div style="font-size:14px; color:#5b6b7a; margin-top:4px;">
-            طبقة أمان إضافية — أدخل كلمة المرور للمتابعة
-          </div>
-          <div style="margin-top:6px; font-size:12px; color:#6b7280;">
-            سيتم إنهاء الجلسة تلقائيًا بعد ${SESSION_MINUTES} دقيقة.
-          </div>
-        </div>
-
-        <label style="display:block; font-weight:700; margin:12px 0 8px; color:#111827;">
-          كلمة المرور
-        </label>
-        <div style="display:flex; gap:10px;">
-          <input id="aaPass" type="password" placeholder="اكتب كلمة المرور هنا"
-            style="flex:1; padding:12px 14px; border:1px solid #d1d5db; border-radius:12px; font-size:16px; outline:none;"
-          />
-          <button id="aaGo" style="
-            padding:12px 16px; border:none; border-radius:12px;
-            background:#0f4c81; color:#fff; font-weight:800; font-size:15px; cursor:pointer;
-          ">دخول</button>
-        </div>
-
-        <div id="aaMsg" style="margin-top:10px; color:#b42318; font-weight:700; display:none;">
-          كلمة المرور غير صحيحة.
-        </div>
-
-        <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
-          <button id="aaLogout" style="
-            padding:10px 12px; border-radius:12px; border:1px solid #e5e7eb;
-            background:#f9fafb; cursor:pointer; font-weight:700;
-          ">تسجيل خروج</button>
-
-          <button id="aaHideKey" style="
-            padding:10px 12px; border-radius:12px; border:1px solid #e5e7eb;
-            background:#f9fafb; cursor:pointer; font-weight:700;
-          ">إخفاء المفتاح من الرابط</button>
-        </div>
-      </div>
-    </div>
-  `;
-
-  document.documentElement.style.overflow = "hidden";
-  document.body.insertAdjacentHTML("beforeend", lockHtml);
-
-  const passEl = document.getElementById("aaPass");
-  const goEl = document.getElementById("aaGo");
-  const msgEl = document.getElementById("aaMsg");
-  const lockEl = document.getElementById("aaLock");
-  const logoutEl = document.getElementById("aaLogout");
-  const hideKeyEl = document.getElementById("aaHideKey");
-
-  function tryLogin() {
-    msgEl.style.display = "none";
-    const val = (passEl.value || "").trim();
-
-    if (val === DASH_PASSWORD) {
-      setAuth();
-      hideKeyFromUrl();
-      lockEl.remove();
-      document.documentElement.style.overflow = "";
-      startAutoLogoutTimer();
-    } else {
-      msgEl.style.display = "block";
-      passEl.focus();
-    }
-  }
-
-  goEl.addEventListener("click", tryLogin);
-  passEl.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") tryLogin();
-  });
-
-  logoutEl.addEventListener("click", () => {
-    clearAuth();
-    location.reload();
-  });
-
-  hideKeyEl.addEventListener("click", hideKeyFromUrl);
-
-  setTimeout(() => passEl.focus(), 200);
-})();
-</script>
-  <!-- سكربت Supabase + Gate 1 -->
-<script>
-  // كود gate الأول + Supabase + loadMerchants
-</script>
-
-<!-- سكربت طبقة الأمان الثانية (كلمة المرور + 20 دقيقة) -->
-<script>
-  // كود Gate 2 (كلمة المرور)
-</script>
-
-</body>
-</html>
 </body>
 </html>
