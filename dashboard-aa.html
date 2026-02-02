@@ -387,21 +387,97 @@
 </script>
 
 <script>
+<script>
 /* =========================
-   A-A SECOND SECURITY LAYER
+   A-A SECOND SECURITY LAYER + 20 MIN SESSION
    ========================= */
 
 (function () {
-  // 1) كلمة المرور (غيرها براحتك)
+  // ✅ 1) كلمة المرور (غيرها)
   const DASH_PASSWORD = "2201647";
 
-  // 2) اسم التخزين المحلي (علشان ما يطلبها كل مرة)
-  const STORAGE_KEY = "AA_DASH_AUTH_OK";
+  // ✅ 2) مدة الجلسة: 20 دقيقة
+  const SESSION_MINUTES = 20;
+  const SESSION_MS = SESSION_MINUTES * 60 * 1000;
 
-  // 3) لو تبي تجبره يطلب كلمة مرور كل مرة، خلها false
+  // ✅ 3) التخزين
+  const STORAGE_OK = "AA_DASH_AUTH_OK";
+  const STORAGE_EXP = "AA_DASH_AUTH_EXP"; // وقت الانتهاء
+
+  // ✅ 4) تذكرني (إذا false = يطلب كلمة مرور كل مرة)
   const REMEMBER_ME = true;
 
-  // 4) شاشة قفل كاملة
+  // ✅ 5) تحقق أن المفتاح السري صحيح أولاً
+  function isKeyValid() {
+    try {
+      const params = new URLSearchParams(location.search);
+      const k = params.get("key") || "";
+      return (typeof SECRET_KEY !== "undefined") && (k === SECRET_KEY);
+    } catch (e) { return false; }
+  }
+
+  // إذا المفتاح غير صحيح → لا نعرض طبقة كلمة المرور أصلاً
+  if (!isKeyValid()) return;
+
+  function now() { return Date.now(); }
+
+  function getExp() {
+    const v = parseInt(localStorage.getItem(STORAGE_EXP) || "0", 10);
+    return Number.isFinite(v) ? v : 0;
+  }
+
+  function clearAuth() {
+    localStorage.removeItem(STORAGE_OK);
+    localStorage.removeItem(STORAGE_EXP);
+  }
+
+  function hasAuth() {
+    if (!REMEMBER_ME) return false;
+    if (localStorage.getItem(STORAGE_OK) !== "1") return false;
+
+    const exp = getExp();
+    if (!exp || now() > exp) {
+      clearAuth();
+      return false;
+    }
+    return true;
+  }
+
+  function setAuth() {
+    if (!REMEMBER_ME) return;
+    localStorage.setItem(STORAGE_OK, "1");
+    localStorage.setItem(STORAGE_EXP, String(now() + SESSION_MS));
+  }
+
+  function hideKeyFromUrl() {
+    try {
+      const url = new URL(window.location.href);
+      if (url.searchParams.has("key")) {
+        url.searchParams.delete("key");
+        window.history.replaceState({}, "", url.toString());
+      }
+    } catch (e) {}
+  }
+
+  function startAutoLogoutTimer() {
+    const exp = getExp();
+    const left = Math.max(0, exp - now());
+    if (!left) return;
+
+    setTimeout(() => {
+      clearAuth();
+      location.reload(); // يرجع يطلب كلمة المرور
+    }, left);
+  }
+
+  // لو مصادق قبل كذا وما انتهت الجلسة → نخفي المفتاح ونبدأ المؤقت
+  if (hasAuth()) {
+    hideKeyFromUrl();
+    startAutoLogoutTimer();
+    return;
+  }
+
+  // شاشة القفل
   const lockHtml = `
     <div id="aaLock" style="
       position:fixed; inset:0; z-index:999999;
@@ -418,6 +494,9 @@
           <div style="font-size:22px; font-weight:800; color:#0b3a63;">لوحة التحكم A-A</div>
           <div style="font-size:14px; color:#5b6b7a; margin-top:4px;">
             طبقة أمان إضافية — أدخل كلمة المرور للمتابعة
+          </div>
+          <div style="margin-top:6px; font-size:12px; color:#6b7280;">
+            سيتم إنهاء الجلسة تلقائيًا بعد ${SESSION_MINUTES} دقيقة.
           </div>
         </div>
 
@@ -442,52 +521,17 @@
           <button id="aaLogout" style="
             padding:10px 12px; border-radius:12px; border:1px solid #e5e7eb;
             background:#f9fafb; cursor:pointer; font-weight:700;
-          ">إلغاء حفظ الدخول</button>
+          ">تسجيل خروج</button>
 
           <button id="aaHideKey" style="
             padding:10px 12px; border-radius:12px; border:1px solid #e5e7eb;
             background:#f9fafb; cursor:pointer; font-weight:700;
           ">إخفاء المفتاح من الرابط</button>
         </div>
-
-        <div style="margin-top:14px; font-size:12px; color:#6b7280; line-height:1.7;">
-          • إذا كنت على جهازك الخاص يمكنك ترك الحفظ مفعّل.<br>
-          • زر “إخفاء المفتاح” يحذف ?key من شريط العنوان بعد الدخول (أفضل).
-        </div>
       </div>
     </div>
   `;
 
-  function hasAuth() {
-    return REMEMBER_ME && localStorage.getItem(STORAGE_KEY) === "1";
-  }
-
-  function setAuth() {
-    if (REMEMBER_ME) localStorage.setItem(STORAGE_KEY, "1");
-  }
-
-  function clearAuth() {
-    localStorage.removeItem(STORAGE_KEY);
-  }
-
-  function hideKeyFromUrl() {
-    try {
-      const url = new URL(window.location.href);
-      if (url.searchParams.has("key")) {
-        url.searchParams.delete("key");
-        window.history.replaceState({}, "", url.toString());
-      }
-    } catch (e) {}
-  }
-
-  // إذا مصادق قبل كذا → لا نقفل
-  if (hasAuth()) {
-    // (اختياري) يخفي المفتاح حتى لو مصادق
-    hideKeyFromUrl();
-    return;
-  }
-
-  // أقفل الصفحة إلى أن يتم التحقق
   document.documentElement.style.overflow = "hidden";
   document.body.insertAdjacentHTML("beforeend", lockHtml);
 
@@ -501,11 +545,13 @@
   function tryLogin() {
     msgEl.style.display = "none";
     const val = (passEl.value || "").trim();
+
     if (val === DASH_PASSWORD) {
       setAuth();
       hideKeyFromUrl();
       lockEl.remove();
       document.documentElement.style.overflow = "";
+      startAutoLogoutTimer();
     } else {
       msgEl.style.display = "block";
       passEl.focus();
@@ -519,14 +565,11 @@
 
   logoutEl.addEventListener("click", () => {
     clearAuth();
-    msgEl.style.display = "none";
-    passEl.value = "";
-    passEl.focus();
+    location.reload();
   });
 
   hideKeyEl.addEventListener("click", hideKeyFromUrl);
 
-  // تركيز تلقائي
   setTimeout(() => passEl.focus(), 200);
 })();
 </script>
