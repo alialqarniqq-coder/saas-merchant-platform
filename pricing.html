@@ -13,13 +13,13 @@
     nav a{color:#fff;text-decoration:none;padding:8px 12px;border-radius:10px;opacity:.95}
     nav a:hover{background:rgba(255,255,255,.12)}
     main{max-width:1100px;margin:18px auto;padding:0 14px}
-    .grid{display:grid;gap:14px}
     .plans{display:grid;gap:14px}
     .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
     .muted{color:var(--muted);line-height:1.8}
     .price{font-size:30px;font-weight:900;margin:10px 0}
     ul{margin:10px 0 0;padding:0 18px;line-height:2}
-    .btn{display:inline-block;background:var(--brand);color:#fff;text-decoration:none;padding:12px 16px;border-radius:12px;font-weight:900}
+    .btn{display:inline-block;background:var(--brand);color:#fff;border:none;cursor:pointer;
+         padding:12px 16px;border-radius:12px;font-weight:900;font-size:15px}
     .btn.secondary{background:#eaf2ff;color:#0b3a63}
     footer{margin-top:18px;text-align:center;padding:16px;color:var(--muted)}
     @media(min-width:900px){.plans{grid-template-columns:1fr 1fr 1fr}}
@@ -29,7 +29,7 @@
 
 <header>
   <h1 style="margin:0">الباقات</h1>
-  <p style="margin:8px 0 0;opacity:.95">اختر الباقة المناسبة وابدأ التسجيل خلال دقيقة</p>
+  <p style="margin:8px 0 0;opacity:.95">اختر الباقة المناسبة وابدأ الدفع فورًا</p>
 </header>
 
 <nav>
@@ -43,60 +43,90 @@
 <main>
   <section class="card">
     <h2 style="margin:0 0 8px">باقات مرنة للتجار</h2>
-    <p class="muted" style="margin:0">مبدئيًا: التسجيل مجاني، والدفع عند التفعيل. كل باقة تقدر ترقيها لاحقًا.</p>
+    <p class="muted" style="margin:0">
+      الدفع يتم آليًا، والتفعيل مباشر بدون أي تدخل منك.
+    </p>
   </section>
 
   <div class="plans" style="margin-top:14px">
+
+    <!-- الباقة الأساسية -->
     <div class="card">
       <h3 style="margin:0">الأساسية</h3>
       <div class="price">10 ريال <span class="muted" style="font-size:14px">/ شهريًا</span></div>
       <ul>
         <li>تسجيل بيانات النشاط</li>
-        <li>تثبيت الباقة والمدينة</li>
-        <li>قناة تفعيل عبر واتساب</li>
+        <li>تثبيت المدينة والنشاط</li>
+        <li>تفعيل آلي</li>
       </ul>
       <div style="margin-top:14px">
-        <a class="btn" href="signup.html">ابدأ بهذه الباقة</a>
+        <button class="btn" onclick="subscribe('basic')">اشترك الآن</button>
       </div>
     </div>
 
+    <!-- الباقة المتقدمة -->
     <div class="card" style="border-width:2px">
       <h3 style="margin:0">المتقدمة</h3>
       <div class="price">25 ريال <span class="muted" style="font-size:14px">/ شهريًا</span></div>
       <ul>
         <li>كل مميزات الأساسية</li>
-        <li>تقارير PDF دورية</li>
-        <li>قوالب رسائل جاهزة للتواصل</li>
+        <li>تقارير PDF تلقائية</li>
+        <li>قوالب رسائل جاهزة</li>
       </ul>
       <div style="margin-top:14px">
-        <a class="btn" href="signup.html">ابدأ بهذه الباقة</a>
+        <button class="btn" onclick="subscribe('pro')">اشترك الآن</button>
       </div>
     </div>
 
+    <!-- باقة البرو -->
     <div class="card">
       <h3 style="margin:0">البرو</h3>
       <div class="price">49 ريال <span class="muted" style="font-size:14px">/ شهريًا</span></div>
       <ul>
         <li>كل مميزات المتقدمة</li>
         <li>أولوية دعم</li>
-        <li>تخصيص أعلى للتقارير والرسائل</li>
+        <li>تخصيص كامل للتقارير</li>
       </ul>
       <div style="margin-top:14px">
-        <a class="btn" href="signup.html">ابدأ بهذه الباقة</a>
+        <button class="btn" onclick="subscribe('vip')">اشترك الآن</button>
       </div>
     </div>
-  </div>
 
-  <section class="card" style="margin-top:14px">
-    <h3 style="margin:0 0 8px">جاهز؟</h3>
-    <p class="muted" style="margin:0">سجّل بياناتك الآن، وبعدها يفتح لك واتساب برسالة جاهزة للتفعيل.</p>
-    <div style="margin-top:12px">
-      <a class="btn secondary" href="signup.html">ابدأ الآن</a>
-    </div>
-  </section>
+  </div>
 </main>
 
 <footer>© 2026 SaaS Merchant Platform</footer>
+
+<!-- ===== سكربت الدفع ===== -->
+<script>
+  async function subscribe(plan) {
+    try {
+      const res = await fetch(
+        "https://udsqvnvjktggdtzpoyts.supabase.co/functions/v1/create-checkout",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ plan })
+        }
+      );
+
+      const data = await res.json();
+
+      if (!data.url) {
+        alert("تعذر إنشاء رابط الدفع");
+        return;
+      }
+
+      // تحويل مباشر لصفحة الدفع
+      window.location.href = data.url;
+
+    } catch (e) {
+      alert("حدث خطأ، حاول مرة أخرى");
+    }
+  }
+</script>
 
 </body>
 </html>
