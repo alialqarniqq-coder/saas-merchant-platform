@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>لوحة الإدارة</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body{font-family:Arial;background:#f5f7fa;margin:0;padding:20px}
+    h1{margin-bottom:10px}
+    table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden}
+    th,td{padding:12px;border-bottom:1px solid #e5e7eb;text-align:right}
+    th{background:#0f4c81;color:#fff}
+    tr:hover{background:#f1f5f9}
+    .muted{color:#6b7280;font-size:13px}
+  </style>
+</head>
+<body>
+
+<h1>📊 لوحة المشتركين</h1>
+<p class="muted">جميع التجار المسجلين في المنصة</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>الاسم</th>
+      <th>الجوال</th>
+      <th>المدينة</th>
+      <th>الباقة</th>
+      <th>تاريخ التسجيل</th>
+    </tr>
+  </thead>
+  <tbody id="rows">
+    <tr><td colspan="5">جاري التحميل...</td></tr>
+  </tbody>
+</table>
+
+<script>
+  const supabase = window.supabase.createClient(
+    "https://udsqvnvjktggdtzpoyts.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkc3F2bnZqa3RnZ2R0enBveXRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk4NjMyMDEsImV4cCI6MjA4NTQzOTIwMX0.le_aDD0cB7PCg_d6bH_rvGfGagqriEN1oinXV5N-frM"
+  );
+
+  async function loadMerchants() {
+    const { data, error } = await supabase
+      .from("merchants")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    const rows = document.getElementById("rows");
+    rows.innerHTML = "";
+
+    if (error) {
+      rows.innerHTML = `<tr><td colspan="5">خطأ في التحميل</td></tr>`;
+      return;
+    }
+
+    if (!data.length) {
+      rows.innerHTML = `<tr><td colspan="5">لا يوجد مشتركين بعد</td></tr>`;
+      return;
+    }
+
+    data.forEach(m => {
+      rows.innerHTML += `
+        <tr>
+          <td>${m.name || "-"}</td>
+          <td>${m.phone || "-"}</td>
+          <td>${m.city || "-"}</td>
+          <td>${m.plan || "-"}</td>
+          <td>${new Date(m.created_at).toLocaleString("ar-SA")}</td>
+        </tr>
+      `;
+    });
+  }
+
+  loadMerchants();
+</script>
+
+</body>
+</html>
