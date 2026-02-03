@@ -1,77 +1,137 @@
-<!DOCTYPE html>
-<html lang="ar">
+<!doctype html>
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>انتهى الاشتراك</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>تجديد الاشتراك</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f7f7f7;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-
-    .box {
-      background: #fff;
-      padding: 30px;
-      max-width: 420px;
-      width: 90%;
-      text-align: center;
-      border-radius: 10px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    }
-
-    h1 {
-      color: #d32f2f;
-      margin-bottom: 10px;
-    }
-
-    p {
-      color: #555;
-      line-height: 1.7;
-      margin-bottom: 25px;
-    }
-
-    button {
-      background: #2e7d32;
-      color: #fff;
-      border: none;
-      padding: 14px 20px;
-      font-size: 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      width: 100%;
-    }
-
-    button:hover {
-      background: #1b5e20;
-    }
+    :root{--brand:#0f4c81;--bg:#f5f7fa;--card:#fff;--text:#111827;--muted:#6b7280;--line:#e5e7eb;}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,system-ui,-apple-system,Segoe UI;background:var(--bg);color:var(--text)}
+    header{background:var(--brand);color:#fff;padding:18px 14px;text-align:center}
+    main{max-width:720px;margin:16px auto;padding:0 14px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+    label{display:block;margin:10px 0 6px;font-weight:700}
+    input,select,button{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);font-size:16px}
+    button{background:var(--brand);color:#fff;border:none;font-weight:900;cursor:pointer;margin-top:12px}
+    button:disabled{opacity:.6;cursor:not-allowed}
+    .muted{color:var(--muted);line-height:1.8}
+    .msg{margin-top:12px;font-weight:900}
+    .ok{color:#16a34a}
+    .bad{color:#b42318}
+    .row{display:grid;gap:10px}
+    @media(min-width:720px){.row{grid-template-columns:1.2fr .8fr}}
+    a{color:var(--brand);font-weight:800;text-decoration:none}
   </style>
 </head>
 <body>
 
-  <div class="box">
-    <h1>انتهى اشتراكك</h1>
-    <p>
-      تم إيقاف الوصول للخدمة بسبب انتهاء الاشتراك.<br>
-      يمكنك التجديد الآن والعودة لاستخدام النظام فورًا.
+<header>
+  <h1 style="margin:0">تجديد الاشتراك</h1>
+  <p style="margin:8px 0 0;opacity:.95">اختر باقتك وسيتم التجديد تلقائيًا</p>
+</header>
+
+<main>
+  <section class="card">
+    <p class="muted" style="margin:0">
+      إذا وصلك رابط التجديد من داخل النظام سيكون رمز التاجر مضاف تلقائيًا داخل الرابط.
     </p>
 
-    <button onclick="goToRenew()">
-      🔄 جدّد اشتراكك الآن
-    </button>
-  </div>
+    <div class="row" style="margin-top:12px">
+      <div>
+        <label for="t">رمز التاجر (t)</label>
+        <input id="t" placeholder="سيتم تعبئته تلقائيًا من الرابط" />
+        <div class="muted" style="margin-top:6px;font-size:13px">
+          مثال: renew.html?t=XXXXXXXX
+        </div>
+      </div>
 
-  <script>
-    function goToRenew() {
-      window.location.href = "pricing.html";
+      <div>
+        <label for="plan">اختر الباقة</label>
+        <select id="plan">
+          <option value="basic_30">أساسي — 30 يوم</option>
+          <option value="pro_30">برو — 30 يوم</option>
+          <option value="pro_90">برو — 90 يوم</option>
+        </select>
+      </div>
+    </div>
+
+    <button id="btn">تجديد الآن</button>
+
+    <div id="msg" class="msg"></div>
+
+    <div class="muted" style="margin-top:10px;font-size:13px">
+      بعد نجاح التجديد يمكنك الرجوع إلى <a href="dashboard-aa.html">لوحة التحكم</a>.
+    </div>
+  </section>
+</main>
+
+<script>
+  // 1) ضع هنا Endpoint URL لفنكشن hyper-action من Supabase (Details)
+  // مثال شكله عادة:
+  // https://xxxxx.supabase.co/functions/v1/hyper-action
+  const FUNCTION_URL = "https://udsqvnvjktggdtzpoyts.supabase.co/functions/v1/smooth-action";
+
+  const tEl = document.getElementById('t');
+  const planEl = document.getElementById('plan');
+  const btn = document.getElementById('btn');
+  const msg = document.getElementById('msg');
+
+  // تعبئة t تلقائيًا من الرابط
+  const params = new URLSearchParams(location.search);
+  const tFromUrl = params.get('t');
+  if (tFromUrl) tEl.value = tFromUrl;
+
+  function setMsg(text, ok){
+    msg.textContent = text;
+    msg.className = "msg " + (ok ? "ok" : "bad");
+  }
+
+  btn.addEventListener('click', async () => {
+    const t = (tEl.value || '').trim();
+    const plan_code = planEl.value;
+
+    if (!FUNCTION_URL || FUNCTION_URL.includes("PUT_YOUR_")) {
+      return setMsg("عدّل FUNCTION_URL داخل renew.html وحط رابط hyper-action من Supabase.", false);
     }
-  </script>
+    if (!t) return setMsg("أدخل رمز التاجر (t) أو افتح الرابط الصحيح الذي يحتوي t.", false);
+
+    btn.disabled = true;
+    setMsg("جاري التجديد...", true);
+
+    try {
+      // هذا الطلب يفترض أن فنكشن hyper-action يستقبل:
+      // { t: "token", plan_code: "basic_30|pro_30|pro_90", action:"renew" }
+      const res = await fetch(FUNCTION_URL, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ t, plan_code, action: "renew" })
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        const err = data.error || data.message || ("HTTP " + res.status);
+        setMsg("فشل التجديد: " + err, false);
+        btn.disabled = false;
+        return;
+      }
+
+      // نتوقع من الفنكشن يرجع subscription_end أو رسالة نجاح
+      const end = data.subscription_end || data.new_end || data.end;
+      setMsg(end ? ("تم التجديد بنجاح ✅ انتهاء الاشتراك: " + end) : "تم التجديد بنجاح ✅", true);
+
+      // تحويل اختياري للوحة التحكم بعد ثانيتين
+      setTimeout(() => {
+        location.href = "dashboard-aa.html?t=" + encodeURIComponent(t);
+      }, 2000);
+
+    } catch (e) {
+      setMsg("خطأ اتصال: " + (e.message || e), false);
+      btn.disabled = false;
+    }
+  });
+</script>
 
 </body>
 </html>
