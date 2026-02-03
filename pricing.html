@@ -1,202 +1,150 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>الباقات - منصة التاجر الذكية</title>
+  <meta charset="UTF-8">
+  <title>الباقات والاشتراك</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
-    :root{
-      --brand:#0f4c81;
-      --bg:#f5f7fa;
-      --card:#fff;
-      --text:#111827;
-      --muted:#6b7280;
-      --line:#e5e7eb;
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 0;
     }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:Arial,system-ui,-apple-system,Segoe UI;
-      background:var(--bg);
-      color:var(--text)
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 40px 20px;
     }
-    header{
-      background:var(--brand);
-      color:#fff;
-      padding:20px 14px;
-      text-align:center
+
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
+      color: #222;
     }
-    nav{
-      background:#0b3a63;
-      display:flex;
-      gap:10px;
-      justify-content:center;
-      padding:10px 12px;
-      flex-wrap:wrap
+
+    .plans {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
     }
-    nav a{
-      color:#fff;
-      text-decoration:none;
-      padding:8px 12px;
-      border-radius:10px;
-      opacity:.95
+
+    .plan {
+      background: #fff;
+      border-radius: 12px;
+      padding: 30px 20px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      transition: transform 0.3s ease;
     }
-    nav a:hover{background:rgba(255,255,255,.12)}
-    main{
-      max-width:1100px;
-      margin:18px auto;
-      padding:0 14px
+
+    .plan:hover {
+      transform: translateY(-6px);
     }
-    .plans{
-      display:grid;
-      gap:14px;
-      margin-top:14px
+
+    .plan h2 {
+      margin-bottom: 15px;
+      color: #0a4cff;
     }
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:16px;
-      box-shadow:0 6px 18px rgba(0,0,0,.06)
+
+    .price {
+      font-size: 28px;
+      font-weight: bold;
+      margin: 15px 0;
+      color: #111;
     }
-    .muted{color:var(--muted);line-height:1.8}
-    .price{
-      font-size:30px;
-      font-weight:900;
-      margin:10px 0
+
+    .duration {
+      color: #666;
+      margin-bottom: 20px;
     }
-    ul{
-      margin:10px 0 0;
-      padding:0 18px;
-      line-height:2
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0;
+      color: #444;
     }
-    .btn{
-      display:inline-block;
-      background:var(--brand);
-      color:#fff;
-      text-decoration:none;
-      padding:12px 16px;
-      border-radius:12px;
-      font-weight:900
+
+    ul li {
+      margin-bottom: 10px;
     }
-    .btn.secondary{
-      background:#eaf2ff;
-      color:#0b3a63
+
+    .btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 12px 30px;
+      background: #0a4cff;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 30px;
+      font-size: 16px;
+      transition: background 0.3s ease;
     }
-    footer{
-      margin-top:18px;
-      text-align:center;
-      padding:16px;
-      color:var(--muted)
+
+    .btn:hover {
+      background: #083fd1;
     }
-    @media(min-width:900px){
-      .plans{grid-template-columns:1fr 1fr 1fr}
+
+    .featured {
+      border: 2px solid #0a4cff;
     }
   </style>
 </head>
 
 <body>
 
-<header>
-  <h1 style="margin:0">الباقات</h1>
-  <p style="margin:8px 0 0;opacity:.95">
-    اختر الباقة المناسبة وابدأ التسجيل خلال دقيقة
-  </p>
-</header>
+  <div class="container">
+    <h1>اختر الباقة المناسبة لك</h1>
 
-<nav>
-  <a href="index.html">الرئيسية</a>
-  <a href="pricing.html">الباقات</a>
-  <a href="signup.html">ابدأ الآن</a>
-  <a href="contact.html">تواصل</a>
-  <a href="privacy.html">الخصوصية</a>
-</nav>
+    <div class="plans">
 
-<main>
-
-  <section class="card">
-    <h2 style="margin:0 0 8px">باقات مرنة للتجار</h2>
-    <p class="muted" style="margin:0">
-      التسجيل مجاني، والدفع عند التفعيل. يمكن الترقية في أي وقت.
-    </p>
-  </section>
-
-  <div class="plans">
-
-    <!-- الباقة الأساسية -->
-    <div class="card">
-      <h3 style="margin:0">الأساسية</h3>
-      <div class="price">
-        10 ريال <span class="muted" style="font-size:14px">/ شهريًا</span>
+      <!-- باقة أساسي 30 يوم -->
+      <div class="plan">
+        <h2>الباقة الأساسية</h2>
+        <div class="price">10 ريال</div>
+        <div class="duration">لمدة 30 يوم</div>
+        <ul>
+          <li>✔ استخراج بيانات الأنشطة</li>
+          <li>✔ حفظ البيانات في ملف</li>
+          <li>✖ تقارير متقدمة</li>
+          <li>✖ إرسال رسائل جماعية</li>
+        </ul>
+        <a href="renew.html?plan=basic_30" class="btn">اشترك الآن</a>
       </div>
-      <ul>
-        <li>تسجيل بيانات النشاط</li>
-        <li>تحديد المدينة ونوع النشاط</li>
-        <li>تفعيل يدوي عبر واتساب</li>
-      </ul>
-      <div style="margin-top:14px">
-        <a class="btn" href="signup.html?plan=basic">
-          ابدأ بهذه الباقة
-        </a>
+
+      <!-- باقة برو 30 يوم -->
+      <div class="plan featured">
+        <h2>باقة برو</h2>
+        <div class="price">25 ريال</div>
+        <div class="duration">لمدة 30 يوم</div>
+        <ul>
+          <li>✔ استخراج بيانات غير محدود</li>
+          <li>✔ إرسال رسائل نصية</li>
+          <li>✔ إرفاق PDF وصور</li>
+          <li>✔ تقارير شهرية</li>
+        </ul>
+        <a href="renew.html?plan=pro_30" class="btn">اشترك الآن</a>
       </div>
+
+      <!-- باقة برو 90 يوم -->
+      <div class="plan">
+        <h2>باقة برو بلس</h2>
+        <div class="price">60 ريال</div>
+        <div class="duration">لمدة 90 يوم</div>
+        <ul>
+          <li>✔ جميع مميزات برو</li>
+          <li>✔ تقارير احترافية</li>
+          <li>✔ أولوية في المعالجة</li>
+          <li>✔ دعم فني أسرع</li>
+        </ul>
+        <a href="renew.html?plan=pro_90" class="btn">اشترك الآن</a>
+      </div>
+
     </div>
-
-    <!-- الباقة المتقدمة -->
-    <div class="card" style="border-width:2px">
-      <h3 style="margin:0">المتقدمة</h3>
-      <div class="price">
-        25 ريال <span class="muted" style="font-size:14px">/ شهريًا</span>
-      </div>
-      <ul>
-        <li>جميع مميزات الأساسية</li>
-        <li>تقارير PDF شهرية</li>
-        <li>قوالب رسائل جاهزة</li>
-      </ul>
-      <div style="margin-top:14px">
-        <a class="btn" href="signup.html?plan=pro">
-          ابدأ بهذه الباقة
-        </a>
-      </div>
-    </div>
-
-    <!-- باقة البرو -->
-    <div class="card">
-      <h3 style="margin:0">البرو</h3>
-      <div class="price">
-        49 ريال <span class="muted" style="font-size:14px">/ شهريًا</span>
-      </div>
-      <ul>
-        <li>جميع مميزات المتقدمة</li>
-        <li>أولوية دعم</li>
-        <li>تخصيص أعلى للتقارير</li>
-      </ul>
-      <div style="margin-top:14px">
-        <a class="btn" href="signup.html?plan=premium">
-          ابدأ بهذه الباقة
-        </a>
-      </div>
-    </div>
-
   </div>
-
-  <section class="card" style="margin-top:14px">
-    <h3 style="margin:0 0 8px">جاهز للبدء؟</h3>
-    <p class="muted" style="margin:0">
-      سجّل بياناتك الآن، وسيتم التواصل معك للتفعيل.
-    </p>
-    <div style="margin-top:12px">
-      <a class="btn secondary" href="signup.html">
-        ابدأ الآن
-      </a>
-    </div>
-  </section>
-
-</main>
-
-<footer>
-  © 2026 SaaS Merchant Platform
-</footer>
 
 </body>
 </html>
