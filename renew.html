@@ -1,87 +1,77 @@
-<!doctype html>
-<html lang="ar" dir="rtl">
+<!DOCTYPE html>
+<html lang="ar">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>تجديد الاشتراك</title>
+  <meta charset="UTF-8">
+  <title>انتهى الاشتراك</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <style>
-    body{font-family:Arial,system-ui; background:#f5f7fa; margin:0; color:#111827}
-    .box{max-width:520px;margin:40px auto;background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:16px;box-shadow:0 10px 24px rgba(0,0,0,.08)}
-    h1{margin:0 0 6px;font-size:20px}
-    p{margin:0 0 12px;color:#6b7280;line-height:1.7}
-    input,select,button{width:100%;padding:12px;border-radius:12px;border:1px solid #d1d5db;font-size:16px;outline:none}
-    button{background:#0f4c81;color:#fff;border:none;font-weight:800;cursor:pointer;margin-top:10px}
-    button:disabled{opacity:.6;cursor:not-allowed}
-    .msg{margin-top:12px;font-weight:800}
-    .bad{color:#b42318}
-    .ok{color:#16a34a}
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .box {
+      background: #fff;
+      padding: 30px;
+      max-width: 420px;
+      width: 90%;
+      text-align: center;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: #d32f2f;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #555;
+      line-height: 1.7;
+      margin-bottom: 25px;
+    }
+
+    button {
+      background: #2e7d32;
+      color: #fff;
+      border: none;
+      padding: 14px 20px;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    button:hover {
+      background: #1b5e20;
+    }
   </style>
 </head>
 <body>
+
   <div class="box">
-    <h1>تجديد الاشتراك</h1>
-    <p>اختر الباقة ثم اضغط “الدفع الآن”. سيتم تحويلك لبوابة الدفع.</p>
+    <h1>انتهى اشتراكك</h1>
+    <p>
+      تم إيقاف الوصول للخدمة بسبب انتهاء الاشتراك.<br>
+      يمكنك التجديد الآن والعودة لاستخدام النظام فورًا.
+    </p>
 
-    <label>رمز التاجر (يكون داخل الرابط)</label>
-    <input id="t" placeholder="سيتم تعبئته تلقائياً" />
-
-    <label style="margin-top:10px;">اختر الباقة</label>
-    <select id="plan">
-      <option value="basic_30">أساسي - 30 يوم</option>
-      <option value="pro_30">برو - 30 يوم</option>
-      <option value="pro_90">برو - 90 يوم</option>
-    </select>
-
-    <button id="payBtn">الدفع الآن</button>
-    <div id="msg" class="msg"></div>
+    <button onclick="goToRenew()">
+      🔄 جدّد اشتراكك الآن
+    </button>
   </div>
 
-<script>
-  // ضع رابط Edge Function (بنضبطه بعد قليل)
-  const API_BASE = "https://YOUR_PROJECT_REF.supabase.co/functions/v1";
-
-  function setMsg(text, type){
-    const el = document.getElementById("msg");
-    el.textContent = text;
-    el.className = "msg " + (type || "");
-  }
-
-  // اقرأ token من الرابط ?t=xxxxx
-  const params = new URLSearchParams(location.search);
-  const token = params.get("t") || "";
-  document.getElementById("t").value = token;
-
-  document.getElementById("payBtn").addEventListener("click", async () => {
-    const t = document.getElementById("t").value.trim();
-    const plan = document.getElementById("plan").value;
-
-    if(!t){
-      setMsg("❌ لازم يكون رابطك يحتوي على رمز التاجر t", "bad");
-      return;
+  <script>
+    function goToRenew() {
+      window.location.href = "pricing.html";
     }
+  </script>
 
-    const btn = document.getElementById("payBtn");
-    btn.disabled = true;
-    setMsg("جاري تجهيز رابط الدفع…");
-
-    try{
-      const res = await fetch(`${API_BASE}/create-checkout`, {
-        method: "POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({ token: t, plan })
-      });
-
-      const data = await res.json();
-      if(!res.ok) throw new Error(data?.error || "فشل إنشاء عملية الدفع");
-
-      // تحويل لصفحة الدفع
-      location.href = data.payment_url;
-    }catch(e){
-      setMsg("❌ " + e.message, "bad");
-    }finally{
-      btn.disabled = false;
-    }
-  });
-</script>
 </body>
 </html>
