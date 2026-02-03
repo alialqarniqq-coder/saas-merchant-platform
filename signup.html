@@ -98,7 +98,16 @@
           <label for="biz">اسم النشاط</label>
           <input id="biz" placeholder="مثال: عالم الفخامة للديكور" autocomplete="organization" required />
         </div>
-
+<!-- باقة الاشتراك (تجي تلقائيًا من صفحة الباقات) -->
+<div style="margin:10px 0">
+  <label style="display:block;margin:10px 0 6px;font-weight:700">الباقة</label>
+  <input id="planLabel" type="text" value="—" readonly
+         style="width:100%;padding:10px 12px;border-radius:10px;border:1px solid #e5e7eb;background:#f9fafb" />
+  <input type="hidden" id="plan" name="plan" value="">
+  <p style="margin:8px 0 0;color:#6b7280;font-size:13px;line-height:1.7">
+    تم تحديد الباقة تلقائيًا من صفحة الباقات.
+  </p>
+</div>
         <div>
           <label for="type">نوع النشاط</label>
           <select id="type">
@@ -273,6 +282,28 @@
     }
   });
 </script>
+<script>
+  (function () {
+    const params = new URLSearchParams(location.search);
+    const plan = (params.get("plan") || "").toLowerCase();
 
+    const map = {
+      basic:   { label: "الأساسية (10 ريال / شهريًا)" },
+      pro:     { label: "المتقدمة (25 ريال / شهريًا)" },
+      premium: { label: "البرو (49 ريال / شهريًا)" }
+    };
+
+    const chosen = map[plan] ? plan : "basic"; // الافتراضي الأساسية
+
+    const planHidden = document.getElementById("plan");
+    const planLabel  = document.getElementById("planLabel");
+
+    if (planHidden) planHidden.value = chosen;
+    if (planLabel)  planLabel.value  = map[chosen].label;
+
+    // لو تبغى تمنع التسجيل بدون plan صحيح:
+    // إذا الرابط جا بدون plan يثبت الأساسية تلقائيًا (كما فوق)
+  })();
+</script>
 </body>
 </html>
