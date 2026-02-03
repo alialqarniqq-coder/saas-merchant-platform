@@ -4,32 +4,105 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>الباقات - منصة التاجر الذكية</title>
+
   <style>
-    :root{--brand:#0f4c81;--bg:#f5f7fa;--card:#fff;--text:#111827;--muted:#6b7280;--line:#e5e7eb;}
+    :root{
+      --brand:#0f4c81;
+      --bg:#f5f7fa;
+      --card:#fff;
+      --text:#111827;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+    }
     *{box-sizing:border-box}
-    body{margin:0;font-family:Arial,system-ui,-apple-system,Segoe UI;background:var(--bg);color:var(--text)}
-    header{background:var(--brand);color:#fff;padding:20px 14px;text-align:center}
-    nav{background:#0b3a63;display:flex;gap:10px;justify-content:center;padding:10px 12px;flex-wrap:wrap}
-    nav a{color:#fff;text-decoration:none;padding:8px 12px;border-radius:10px;opacity:.95}
+    body{
+      margin:0;
+      font-family:Arial,system-ui,-apple-system,Segoe UI;
+      background:var(--bg);
+      color:var(--text)
+    }
+    header{
+      background:var(--brand);
+      color:#fff;
+      padding:20px 14px;
+      text-align:center
+    }
+    nav{
+      background:#0b3a63;
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      padding:10px 12px;
+      flex-wrap:wrap
+    }
+    nav a{
+      color:#fff;
+      text-decoration:none;
+      padding:8px 12px;
+      border-radius:10px;
+      opacity:.95
+    }
     nav a:hover{background:rgba(255,255,255,.12)}
-    main{max-width:1100px;margin:18px auto;padding:0 14px}
-    .grid{display:grid;gap:14px}
-    .plans{display:grid;gap:14px}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+    main{
+      max-width:1100px;
+      margin:18px auto;
+      padding:0 14px
+    }
+    .plans{
+      display:grid;
+      gap:14px;
+      margin-top:14px
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:16px;
+      box-shadow:0 6px 18px rgba(0,0,0,.06)
+    }
     .muted{color:var(--muted);line-height:1.8}
-    .price{font-size:30px;font-weight:900;margin:10px 0}
-    ul{margin:10px 0 0;padding:0 18px;line-height:2}
-    .btn{display:inline-block;background:var(--brand);color:#fff;text-decoration:none;padding:12px 16px;border-radius:12px;font-weight:900}
-    .btn.secondary{background:#eaf2ff;color:#0b3a63}
-    footer{margin-top:18px;text-align:center;padding:16px;color:var(--muted)}
-    @media(min-width:900px){.plans{grid-template-columns:1fr 1fr 1fr}}
+    .price{
+      font-size:30px;
+      font-weight:900;
+      margin:10px 0
+    }
+    ul{
+      margin:10px 0 0;
+      padding:0 18px;
+      line-height:2
+    }
+    .btn{
+      display:inline-block;
+      background:var(--brand);
+      color:#fff;
+      text-decoration:none;
+      padding:12px 16px;
+      border-radius:12px;
+      font-weight:900
+    }
+    .btn.secondary{
+      background:#eaf2ff;
+      color:#0b3a63
+    }
+    footer{
+      margin-top:18px;
+      text-align:center;
+      padding:16px;
+      color:var(--muted)
+    }
+    @media(min-width:900px){
+      .plans{grid-template-columns:1fr 1fr 1fr}
+    }
   </style>
 </head>
+
 <body>
 
 <header>
   <h1 style="margin:0">الباقات</h1>
-  <p style="margin:8px 0 0;opacity:.95">اختر الباقة المناسبة وابدأ التسجيل خلال دقيقة</p>
+  <p style="margin:8px 0 0;opacity:.95">
+    اختر الباقة المناسبة وابدأ التسجيل خلال دقيقة
+  </p>
 </header>
 
 <nav>
@@ -41,25 +114,30 @@
 </nav>
 
 <main>
+
   <section class="card">
     <h2 style="margin:0 0 8px">باقات مرنة للتجار</h2>
-    <p class="muted" style="margin:0">مبدئيًا: التسجيل مجاني، والدفع عند التفعيل. كل باقة تقدر ترقيها لاحقًا.</p>
+    <p class="muted" style="margin:0">
+      التسجيل مجاني، والدفع عند التفعيل. يمكن الترقية في أي وقت.
+    </p>
   </section>
 
-  <div class="plans" style="margin-top:14px">
+  <div class="plans">
 
     <!-- الباقة الأساسية -->
     <div class="card">
       <h3 style="margin:0">الأساسية</h3>
-      <div class="price">10 ريال <span class="muted" style="font-size:14px">/ شهريًا</span></div>
+      <div class="price">
+        10 ريال <span class="muted" style="font-size:14px">/ شهريًا</span>
+      </div>
       <ul>
         <li>تسجيل بيانات النشاط</li>
-        <li>تثبيت الباقة والمدينة</li>
-        <li>قناة تفعيل عبر واتساب</li>
+        <li>تحديد المدينة ونوع النشاط</li>
+        <li>تفعيل يدوي عبر واتساب</li>
       </ul>
       <div style="margin-top:14px">
-        <a class="btn" href="PUT_MOYASAR_LINK_10" target="_blank" rel="noopener">
-          ادفع وابدأ الآن
+        <a class="btn" href="signup.html?plan=basic">
+          ابدأ بهذه الباقة
         </a>
       </div>
     </div>
@@ -67,15 +145,17 @@
     <!-- الباقة المتقدمة -->
     <div class="card" style="border-width:2px">
       <h3 style="margin:0">المتقدمة</h3>
-      <div class="price">25 ريال <span class="muted" style="font-size:14px">/ شهريًا</span></div>
+      <div class="price">
+        25 ريال <span class="muted" style="font-size:14px">/ شهريًا</span>
+      </div>
       <ul>
-        <li>كل مميزات الأساسية</li>
-        <li>تقارير PDF دورية</li>
-        <li>قوالب رسائل جاهزة للتواصل</li>
+        <li>جميع مميزات الأساسية</li>
+        <li>تقارير PDF شهرية</li>
+        <li>قوالب رسائل جاهزة</li>
       </ul>
       <div style="margin-top:14px">
-        <a class="btn" href="PUT_MOYASAR_LINK_25" target="_blank" rel="noopener">
-          ادفع وابدأ الآن
+        <a class="btn" href="signup.html?plan=pro">
+          ابدأ بهذه الباقة
         </a>
       </div>
     </div>
@@ -83,15 +163,17 @@
     <!-- باقة البرو -->
     <div class="card">
       <h3 style="margin:0">البرو</h3>
-      <div class="price">49 ريال <span class="muted" style="font-size:14px">/ شهريًا</span></div>
+      <div class="price">
+        49 ريال <span class="muted" style="font-size:14px">/ شهريًا</span>
+      </div>
       <ul>
-        <li>كل مميزات المتقدمة</li>
+        <li>جميع مميزات المتقدمة</li>
         <li>أولوية دعم</li>
-        <li>تخصيص أعلى للتقارير والرسائل</li>
+        <li>تخصيص أعلى للتقارير</li>
       </ul>
       <div style="margin-top:14px">
-        <a class="btn" href="PUT_MOYASAR_LINK_49" target="_blank" rel="noopener">
-          ادفع وابدأ الآن
+        <a class="btn" href="signup.html?plan=premium">
+          ابدأ بهذه الباقة
         </a>
       </div>
     </div>
@@ -99,15 +181,22 @@
   </div>
 
   <section class="card" style="margin-top:14px">
-    <h3 style="margin:0 0 8px">جاهز؟</h3>
-    <p class="muted" style="margin:0">سجّل بياناتك الآن، وبعدها يفتح لك واتساب برسالة جاهزة للتفعيل.</p>
+    <h3 style="margin:0 0 8px">جاهز للبدء؟</h3>
+    <p class="muted" style="margin:0">
+      سجّل بياناتك الآن، وسيتم التواصل معك للتفعيل.
+    </p>
     <div style="margin-top:12px">
-      <a class="btn secondary" href="signup.html">ابدأ الآن</a>
+      <a class="btn secondary" href="signup.html">
+        ابدأ الآن
+      </a>
     </div>
   </section>
+
 </main>
 
-<footer>© 2026 SaaS Merchant Platform</footer>
+<footer>
+  © 2026 SaaS Merchant Platform
+</footer>
 
 </body>
 </html>
