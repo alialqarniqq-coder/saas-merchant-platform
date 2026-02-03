@@ -5,6 +5,7 @@
   <title>لوحة الإدارة</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     body{font-family:Arial;background:#f5f7fa;margin:0;padding:20px}
     h1{margin-bottom:10px}
@@ -36,44 +37,55 @@
 </table>
 
 <script>
-  const supabase = window.supabase.createClient(
-    "https://udsqvnvjktggdtzpoyts.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkc3F2bnZqa3RnZ2R0enBveXRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk4NjMyMDEsImV4cCI6MjA4NTQzOTIwMX0.le_aDD0cB7PCg_d6bH_rvGfGagqriEN1oinXV5N-frM"
-  );
+/* ====== 🔐 حماية الصفحة ====== */
+const ADMIN_PASSWORD = "2201647"; // ← غيرها فورًا
 
-  async function loadMerchants() {
-    const { data, error } = await supabase
-      .from("merchants")
-      .select("*")
-      .order("created_at", { ascending: false });
+const entered = prompt("أدخل كلمة مرور الإدارة:");
+if (entered !== ADMIN_PASSWORD) {
+  alert("غير مصرح بالدخول");
+  document.body.innerHTML = "";
+  throw new Error("Unauthorized");
+}
 
-    const rows = document.getElementById("rows");
-    rows.innerHTML = "";
+/* ====== Supabase ====== */
+const supabase = window.supabase.createClient(
+  "https://udsqvnvjktggdtzpoyts.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkc3F2bnZqa3RnZ2R0enBveXRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk4NjMyMDEsImV4cCI6MjA4NTQzOTIwMX0.le_aDD0cB7PCg_d6bH_rvGfGagqriEN1oinXV5N-frM"
+);
 
-    if (error) {
-      rows.innerHTML = `<tr><td colspan="5">خطأ في التحميل</td></tr>`;
-      return;
-    }
+async function loadMerchants() {
+  const { data, error } = await supabase
+    .from("merchants")
+    .select("*")
+    .order("created_at", { ascending: false });
 
-    if (!data.length) {
-      rows.innerHTML = `<tr><td colspan="5">لا يوجد مشتركين بعد</td></tr>`;
-      return;
-    }
+  const rows = document.getElementById("rows");
+  rows.innerHTML = "";
 
-    data.forEach(m => {
-      rows.innerHTML += `
-        <tr>
-          <td>${m.name || "-"}</td>
-          <td>${m.phone || "-"}</td>
-          <td>${m.city || "-"}</td>
-          <td>${m.plan || "-"}</td>
-          <td>${new Date(m.created_at).toLocaleString("ar-SA")}</td>
-        </tr>
-      `;
-    });
+  if (error) {
+    rows.innerHTML = `<tr><td colspan="5">خطأ في التحميل</td></tr>`;
+    return;
   }
 
-  loadMerchants();
+  if (!data.length) {
+    rows.innerHTML = `<tr><td colspan="5">لا يوجد مشتركين بعد</td></tr>`;
+    return;
+  }
+
+  data.forEach(m => {
+    rows.innerHTML += `
+      <tr>
+        <td>${m.name || "-"}</td>
+        <td>${m.phone || "-"}</td>
+        <td>${m.city || "-"}</td>
+        <td>${m.plan || "-"}</td>
+        <td>${new Date(m.created_at).toLocaleString("ar-SA")}</td>
+      </tr>
+    `;
+  });
+}
+
+loadMerchants();
 </script>
 
 </body>
