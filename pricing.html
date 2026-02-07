@@ -14,79 +14,96 @@
       --text:#111827;
       --muted:#6b7280;
       --line:#e5e7eb;
+      --ok:#16a34a;
+      --bad:#b42318;
       --shadow:0 10px 24px rgba(0,0,0,.08);
-      --radius:14px;
     }
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family: Arial, system-ui, -apple-system, Segoe UI, Roboto;
+      font-family: Arial, system-ui, -apple-system, Segoe UI, Tahoma;
       background:var(--bg);
       color:var(--text);
     }
     header{
-      background:var(--brand);
+      background:linear-gradient(135deg,var(--brand),var(--brand-dark));
       color:#fff;
       padding:18px 14px;
       text-align:center;
     }
-    header h1{margin:0;font-size:20px}
+    header h1{margin:0;font-size:22px}
     header p{margin:6px 0 0;opacity:.95;font-size:13px}
 
-    .container{
-      max-width:1100px;
-      margin:16px auto;
-      padding:0 12px;
-    }
+    main{max-width:980px;margin:16px auto;padding:0 14px}
+    .grid{display:grid;gap:14px;grid-template-columns:1fr}
+    @media (min-width:900px){.grid{grid-template-columns:1fr 1fr}}
 
-    .plans{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:12px;
-    }
-    @media (min-width:900px){
-      .plans{grid-template-columns:1fr 1fr}
-    }
-
-    .plan{
+    .card{
       background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      padding:16px;
+      border-radius:14px;
       box-shadow:var(--shadow);
+      padding:16px;
+      border:1px solid var(--line);
     }
-    .plan h2{margin:0 0 10px;font-size:18px}
-    .price{font-size:26px;font-weight:800;margin:6px 0}
-    .duration{color:var(--muted);margin:0 0 10px}
-    ul{margin:0;padding:0 18px 0 0;line-height:1.9}
-    li{margin:0}
+
+    .planTitle{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .planTitle h2{margin:0;font-size:20px}
+    .badge{
+      background:#e8f0fe;
+      color:#1a56db;
+      border:1px solid #cfe0ff;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      white-space:nowrap;
+    }
+
+    .priceRow{margin-top:8px}
+    .price{
+      font-size:40px;
+      font-weight:800;
+      margin:0;
+      line-height:1;
+    }
+    .duration{color:var(--muted);margin:6px 0 0;font-size:13px}
+
+    ul{margin:14px 0 0;padding:0 18px}
+    li{margin:8px 0;line-height:1.7}
 
     .btn{
-      display:inline-block;
+      margin-top:16px;
       width:100%;
-      margin-top:14px;
-      padding:12px 14px;
-      border-radius:12px;
-      border:0;
-      cursor:pointer;
+      border:none;
       background:var(--brand);
       color:#fff;
-      font-weight:800;
-      font-size:15px;
-      transition:.15s;
-    }
-    .btn:hover{background:var(--brand-dark)}
-    .note{
-      margin-top:12px;
-      color:var(--muted);
-      font-size:13px;
-    }
-
-    #payMsg{
-      text-align:center;
-      margin:14px 0 0;
+      padding:14px 12px;
+      border-radius:12px;
+      font-size:16px;
+      cursor:pointer;
       font-weight:700;
     }
+    .btn:hover{filter:brightness(.95)}
+    .btn:disabled{opacity:.7;cursor:not-allowed}
+
+    .msgBox{
+      margin-top:14px;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+    }
+    .msgBox .hint{color:var(--muted);font-size:13px;margin:0}
+    .msgBox .msg{margin:10px 0 0;font-weight:700}
+    .msg.ok{color:var(--ok)}
+    .msg.bad{color:var(--bad)}
+
+    .smallNote{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.7;
+    }
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
   </style>
 </head>
 
@@ -96,29 +113,42 @@
     <p>اختر الباقة ثم سيتم تحويلك مباشرة إلى الدفع</p>
   </header>
 
-  <div class="container">
-    <div class="plans">
+  <main>
+    <div class="grid">
+      <!-- Basic -->
+      <section class="card">
+        <div class="planTitle">
+          <h2>باقة Basic</h2>
+          <span class="badge">مناسبة للبداية</span>
+        </div>
 
-      <!-- باقة Basic 30 يوم -->
-      <div class="plan">
-        <h2>باقة Basic</h2>
-        <div class="price">10 ريال</div>
-        <div class="duration">لمدة 30 يوم</div>
+        <div class="priceRow">
+          <p class="price">10 <span style="font-size:18px;font-weight:700;">ريال</span></p>
+          <p class="duration">لمدة 30 يوم</p>
+        </div>
+
         <ul>
           <li>✓ استخراج بيانات الأنشطة</li>
           <li>✓ حفظ بياناتك في ملف</li>
-          <li>✗ تقارير متقدمة</li>
-          <li>✗ إرسال رسائل جماعية</li>
+          <li>✕ تقارير متقدمة</li>
+          <li>✕ إرسال رسائل جماعية</li>
         </ul>
 
         <button class="btn" onclick="subscribe('basic_30')">اشترك الآن</button>
-      </div>
+      </section>
 
-      <!-- باقة Pro 30 يوم -->
-      <div class="plan">
-        <h2>باقة Pro</h2>
-        <div class="price">30 ريال</div>
-        <div class="duration">لمدة 30 يوم</div>
+      <!-- Pro -->
+      <section class="card">
+        <div class="planTitle">
+          <h2>باقة Pro</h2>
+          <span class="badge">الأكثر طلبًا</span>
+        </div>
+
+        <div class="priceRow">
+          <p class="price">30 <span style="font-size:18px;font-weight:700;">ريال</span></p>
+          <p class="duration">لمدة 30 يوم</p>
+        </div>
+
         <ul>
           <li>✓ كل مزايا Basic</li>
           <li>✓ تقارير متقدمة</li>
@@ -127,64 +157,116 @@
         </ul>
 
         <button class="btn" onclick="subscribe('pro_30')">اشترك الآن</button>
-      </div>
-
+      </section>
     </div>
 
-    <p id="payMsg"></p>
-
-    <p class="note">
-      ملاحظة: لازم يكون معك <b>merchant_id</b> (UUID) محفوظ في النظام أو موجود بالرابط.
-    </p>
-  </div>
+    <div class="msgBox">
+      <p class="hint">
+        ملاحظة: لازم يكون عندك <b>merchant_id</b> (UUID) إمّا في رابط الصفحة:
+        <span class="mono">?merchant_id=...</span>
+        أو محفوظ في <span class="mono">localStorage</span>.
+      </p>
+      <p id="payMsg" class="msg"></p>
+      <div class="smallNote">
+        إذا وصلت هنا بدون تسجيل (signup) أولاً، روح لصفحة التسجيل ثم ارجع هنا.
+      </div>
+    </div>
+  </main>
 
   <script>
-    // ضع رابط مشروعك هنا
+    // =========================
+    // 1) إعدادات Supabase
+    // =========================
     const SUPABASE_URL = "https://udsqvnvjktggdtzpoyts.supabase.co";
 
-    // اسم Edge Function اللي تنشئ جلسة الدفع (غيره إذا اسمك مختلف)
+    // ضع anon key هنا (Publishable/Anon فقط)
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkc3F2bnZqa3RnZ2R0enBveXRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk4NjMyMDEsImV4cCI6MjA4NTQzOTIwMX0.le_aDD0cB7PCg_d6bH_rvGfGagqriEN1oinXV5N-frM";
+
+    // رابط إنشاء الدفع (Edge Function)
     const CHECKOUT_URL = `${SUPABASE_URL}/functions/v1/create-checkout`;
 
-    // نقرأ merchant_id إما من الرابط أو من localStorage
+    // =========================
+    // 2) جلب merchant_id
+    // =========================
     const merchantId =
       new URLSearchParams(window.location.search).get("merchant_id") ||
       localStorage.getItem("merchant_id");
 
+    // عرض تنبيه لو ما فيه merchant_id
+    const payMsg = document.getElementById("payMsg");
+    if (!merchantId) {
+      payMsg.className = "msg bad";
+      payMsg.textContent = "❌ لا يوجد merchant_id — افتح الصفحة برابط فيه merchant_id أو خزّنه في localStorage.";
+    }
+
+    // =========================
+    // 3) تنفيذ الاشتراك
+    // =========================
     async function subscribe(planCode) {
-      const msg = document.getElementById("payMsg");
+      const buttons = document.querySelectorAll("button.btn");
+      const setBusy = (busy) => buttons.forEach(b => b.disabled = busy);
 
       if (!merchantId) {
-        msg.innerText = "❌ لا يوجد merchant_id. افتح الصفحة برابط فيه merchant_id أو خزّنه في localStorage.";
+        payMsg.className = "msg bad";
+        payMsg.textContent = "❌ لا يوجد merchant_id — سجّل أولاً أو افتح الرابط الصحيح.";
         return;
       }
 
-      msg.innerText = "جاري تجهيز رابط الدفع...";
+      payMsg.className = "msg";
+      payMsg.textContent = "⏳ جاري تجهيز رابط الدفع...";
 
+      setBusy(true);
       try {
         const res = await fetch(CHECKOUT_URL, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            // مهم: استدعاء Edge Function من المتصفح يكون بمفتاح anon
+            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
+            "apikey": SUPABASE_ANON_KEY
+          },
           body: JSON.stringify({
             merchant_id: merchantId,
             plan_code: planCode
-          }),
+          })
         });
 
-        const data = await res.json();
+        // حاول قراءة JSON
+        let data = null;
+        try { data = await res.json(); } catch (e) {}
 
-        if (!res.ok || !data.url) {
-          msg.innerText = "❌ خطأ: " + (data.error || "لم يتم إنشاء رابط الدفع");
-          return;
+        if (!res.ok) {
+          const msg = (data && (data.error || data.message)) ? (data.error || data.message) : `HTTP ${res.status}`;
+          throw new Error(msg);
         }
 
-        msg.innerText = "✅ سيتم تحويلك للدفع الآن...";
-        window.location.href = data.url;
+        // نتوقع أن الدالة ترجع رابط الدفع
+        const paymentUrl =
+          (data && (data.payment_url || data.url || data.checkout_url)) || null;
 
-      } catch (e) {
-        msg.innerText = "❌ تعذر الاتصال بالسيرفر. حاول مرة أخرى.";
-        console.error(e);
+        if (!paymentUrl) {
+          // إذا دالتك ترجع شيء مختلف، نعرض الرد كامل لمساعدتك
+          console.log("Function response:", data);
+          throw new Error("لم يتم العثور على رابط الدفع في الاستجابة (payment_url).");
+        }
+
+        payMsg.className = "msg ok";
+        payMsg.textContent = "✅ تم إنشاء رابط الدفع.. جاري التحويل الآن";
+        window.location.href = paymentUrl;
+
+      } catch (err) {
+        payMsg.className = "msg bad";
+        payMsg.textContent = "❌ خطأ: لم يتم إنشاء رابط الدفع — " + (err?.message || "غير معروف");
+        console.error(err);
+      } finally {
+        setBusy(false);
       }
     }
+
+    // (اختياري) للتأكد من وجود merchant_id في localStorage عند الوصول برابط
+    // إذا كان موجود في الرابط فقط، نخزّنه ليستمر للزيارات القادمة
+    const qMerchant = new URLSearchParams(window.location.search).get("merchant_id");
+    if (qMerchant) localStorage.setItem("merchant_id", qMerchant);
   </script>
 </body>
 </html>
