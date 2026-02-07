@@ -1,189 +1,190 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>الباقات والاشتراك</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>اختر الباقة المناسبة لك</title>
 
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f7fa;
-      margin: 0;
-      padding: 0;
+    :root{
+      --brand:#0f4c81;
+      --brand-dark:#0b3a63;
+      --bg:#f5f7fa;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --shadow:0 10px 24px rgba(0,0,0,.08);
+      --radius:14px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Arial, system-ui, -apple-system, Segoe UI, Roboto;
+      background:var(--bg);
+      color:var(--text);
+    }
+    header{
+      background:var(--brand);
+      color:#fff;
+      padding:18px 14px;
+      text-align:center;
+    }
+    header h1{margin:0;font-size:20px}
+    header p{margin:6px 0 0;opacity:.95;font-size:13px}
+
+    .container{
+      max-width:1100px;
+      margin:16px auto;
+      padding:0 12px;
     }
 
-    .container {
-      max-width: 1100px;
-      margin: auto;
-      padding: 40px 20px;
+    .plans{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+    }
+    @media (min-width:900px){
+      .plans{grid-template-columns:1fr 1fr}
     }
 
-    h1 {
-      text-align: center;
-      margin-bottom: 40px;
-      color: #222;
+    .plan{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:16px;
+      box-shadow:var(--shadow);
+    }
+    .plan h2{margin:0 0 10px;font-size:18px}
+    .price{font-size:26px;font-weight:800;margin:6px 0}
+    .duration{color:var(--muted);margin:0 0 10px}
+    ul{margin:0;padding:0 18px 0 0;line-height:1.9}
+    li{margin:0}
+
+    .btn{
+      display:inline-block;
+      width:100%;
+      margin-top:14px;
+      padding:12px 14px;
+      border-radius:12px;
+      border:0;
+      cursor:pointer;
+      background:var(--brand);
+      color:#fff;
+      font-weight:800;
+      font-size:15px;
+      transition:.15s;
+    }
+    .btn:hover{background:var(--brand-dark)}
+    .note{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:13px;
     }
 
-    .plans {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 25px;
-    }
-
-    .plan {
-      background: #fff;
-      border-radius: 12px;
-      padding: 30px 20px;
-      text-align: center;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-      transition: transform 0.3s ease;
-    }
-
-    .plan:hover {
-      transform: translateY(-6px);
-    }
-
-    .plan h2 {
-      margin-bottom: 15px;
-      color: #0a4cff;
-    }
-
-    .price {
-      font-size: 28px;
-      font-weight: bold;
-      margin: 15px 0;
-      color: #111;
-    }
-
-    .duration {
-      color: #666;
-      margin-bottom: 20px;
-    }
-
-    ul {
-      list-style: none;
-      padding: 0;
-      margin: 20px 0;
-      color: #444;
-    }
-
-    ul li {
-      margin-bottom: 10px;
-    }
-
-    .btn {
-      display: inline-block;
-      margin-top: 15px;
-      padding: 12px 30px;
-      background: #0a4cff;
-      color: #fff;
-      text-decoration: none;
-      border-radius: 30px;
-      font-size: 16px;
-      transition: background 0.3s ease;
-    }
-
-    .btn:hover {
-      background: #083fd1;
-    }
-
-    .featured {
-      border: 2px solid #0a4cff;
+    #payMsg{
+      text-align:center;
+      margin:14px 0 0;
+      font-weight:700;
     }
   </style>
 </head>
 
 <body>
+  <header>
+    <h1>اختر الباقة المناسبة لك</h1>
+    <p>اختر الباقة ثم سيتم تحويلك مباشرة إلى الدفع</p>
+  </header>
 
   <div class="container">
-    <h1>اختر الباقة المناسبة لك</h1>
-
     <div class="plans">
 
-      <!-- باقة أساسي 30 يوم -->
+      <!-- باقة Basic 30 يوم -->
       <div class="plan">
-        <h2>الباقة الأساسية</h2>
+        <h2>باقة Basic</h2>
         <div class="price">10 ريال</div>
         <div class="duration">لمدة 30 يوم</div>
         <ul>
-          <li>✔ استخراج بيانات الأنشطة</li>
-          <li>✔ حفظ البيانات في ملف</li>
-          <li>✖ تقارير متقدمة</li>
-          <li>✖ إرسال رسائل جماعية</li>
+          <li>✓ استخراج بيانات الأنشطة</li>
+          <li>✓ حفظ بياناتك في ملف</li>
+          <li>✗ تقارير متقدمة</li>
+          <li>✗ إرسال رسائل جماعية</li>
         </ul>
-        <a href="renew.html?plan=basic_30" class="btn">اشترك الآن</a>
+
+        <button class="btn" onclick="subscribe('basic_30')">اشترك الآن</button>
       </div>
 
-      <!-- باقة برو 30 يوم -->
-      <div class="plan featured">
-        <h2>باقة برو</h2>
-        <div class="price">25 ريال</div>
+      <!-- باقة Pro 30 يوم -->
+      <div class="plan">
+        <h2>باقة Pro</h2>
+        <div class="price">30 ريال</div>
         <div class="duration">لمدة 30 يوم</div>
         <ul>
-          <li>✔ استخراج بيانات غير محدود</li>
-          <li>✔ إرسال رسائل نصية</li>
-          <li>✔ إرفاق PDF وصور</li>
-          <li>✔ تقارير شهرية</li>
+          <li>✓ كل مزايا Basic</li>
+          <li>✓ تقارير متقدمة</li>
+          <li>✓ أدوات إضافية للتاجر</li>
+          <li>✓ دعم أفضل</li>
         </ul>
-        <a href="renew.html?plan=pro_30" class="btn">اشترك الآن</a>
-      </div>
 
-      <!-- باقة برو 90 يوم -->
-      <div class="plan">
-        <h2>باقة برو بلس</h2>
-        <div class="price">60 ريال</div>
-        <div class="duration">لمدة 90 يوم</div>
-        <ul>
-          <li>✔ جميع مميزات برو</li>
-          <li>✔ تقارير احترافية</li>
-          <li>✔ أولوية في المعالجة</li>
-          <li>✔ دعم فني أسرع</li>
-        </ul>
-        <a href="renew.html?plan=pro_90" class="btn">اشترك الآن</a>
+        <button class="btn" onclick="subscribe('pro_30')">اشترك الآن</button>
       </div>
 
     </div>
+
+    <p id="payMsg"></p>
+
+    <p class="note">
+      ملاحظة: لازم يكون معك <b>merchant_id</b> (UUID) محفوظ في النظام أو موجود بالرابط.
+    </p>
   </div>
-<script>
-  const SUBSCRIBE_FN_URL = "https://udsqvnvjktggdtzpoyts.supabase.co/functions/v1/smooth-action";
 
-  // لازم يكون عندك merchant_id محفوظ (مثلاً بعد تسجيل التاجر)
-  // مثال: localStorage.setItem("merchant_id", "UUID-HERE");
+  <script>
+    // ضع رابط مشروعك هنا
+    const SUPABASE_URL = "https://udsqvnvjktggdtzpoyts.supabase.co";
 
-  async function subscribe(planCode) {
-    const merchantId = localStorage.getItem("merchant_id");
-    if (!merchantId) {
-      alert("لا يوجد merchant_id. سجل التاجر أولاً ثم حاول مرة أخرى.");
-      return;
-    }
+    // اسم Edge Function اللي تنشئ جلسة الدفع (غيره إذا اسمك مختلف)
+    const CHECKOUT_URL = `${SUPABASE_URL}/functions/v1/create-checkout`;
 
-    try {
-      const res = await fetch(SUBSCRIBE_FN_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          merchant_id: merchantId,
-          plan_code: planCode
-        })
-      });
+    // نقرأ merchant_id إما من الرابط أو من localStorage
+    const merchantId =
+      new URLSearchParams(window.location.search).get("merchant_id") ||
+      localStorage.getItem("merchant_id");
 
-      const data = await res.json();
+    async function subscribe(planCode) {
+      const msg = document.getElementById("payMsg");
 
-      if (!res.ok || !data.success) {
-        console.log(data);
-        alert("فشل تفعيل الاشتراك: " + (data.error || "Unknown error"));
+      if (!merchantId) {
+        msg.innerText = "❌ لا يوجد merchant_id. افتح الصفحة برابط فيه merchant_id أو خزّنه في localStorage.";
         return;
       }
 
-      alert("تم تفعيل الاشتراك بنجاح ✅");
-      // حوله للوحة التحكم
-      window.location.href = "dashboard-aa.html";
-    } catch (e) {
-      console.error(e);
-      alert("حصل خطأ في الاتصال");
+      msg.innerText = "جاري تجهيز رابط الدفع...";
+
+      try {
+        const res = await fetch(CHECKOUT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            merchant_id: merchantId,
+            plan_code: planCode
+          }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || !data.url) {
+          msg.innerText = "❌ خطأ: " + (data.error || "لم يتم إنشاء رابط الدفع");
+          return;
+        }
+
+        msg.innerText = "✅ سيتم تحويلك للدفع الآن...";
+        window.location.href = data.url;
+
+      } catch (e) {
+        msg.innerText = "❌ تعذر الاتصال بالسيرفر. حاول مرة أخرى.";
+        console.error(e);
+      }
     }
-  }
-</script>
+  </script>
 </body>
 </html>
