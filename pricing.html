@@ -145,6 +145,45 @@
 
     </div>
   </div>
+<script>
+  const SUBSCRIBE_FN_URL = "https://udsqvnvjktggdtzpoyts.supabase.co/functions/v1/smooth-action";
 
+  // لازم يكون عندك merchant_id محفوظ (مثلاً بعد تسجيل التاجر)
+  // مثال: localStorage.setItem("merchant_id", "UUID-HERE");
+
+  async function subscribe(planCode) {
+    const merchantId = localStorage.getItem("merchant_id");
+    if (!merchantId) {
+      alert("لا يوجد merchant_id. سجل التاجر أولاً ثم حاول مرة أخرى.");
+      return;
+    }
+
+    try {
+      const res = await fetch(SUBSCRIBE_FN_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          merchant_id: merchantId,
+          plan_code: planCode
+        })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        console.log(data);
+        alert("فشل تفعيل الاشتراك: " + (data.error || "Unknown error"));
+        return;
+      }
+
+      alert("تم تفعيل الاشتراك بنجاح ✅");
+      // حوله للوحة التحكم
+      window.location.href = "dashboard-aa.html";
+    } catch (e) {
+      console.error(e);
+      alert("حصل خطأ في الاتصال");
+    }
+  }
+</script>
 </body>
 </html>
