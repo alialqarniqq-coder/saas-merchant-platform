@@ -2,8 +2,8 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ابدأ الآن - منصة التاجر الذكية</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تسجيل تاجر جديد</title>
 
   <style>
     :root{
@@ -19,291 +19,264 @@
       --shadow:0 10px 24px rgba(0,0,0,.08);
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:Arial,system-ui,-apple-system,Segoe UI; background:var(--bg); color:var(--text)}
-    header{background:var(--brand); color:#fff; padding:22px 16px; text-align:center}
-    header h1{margin:0}
-    header p{margin:6px 0 0;opacity:.95}
-
-    nav{background:var(--brand-dark); display:flex; gap:10px; justify-content:center; padding:10px 12px; flex-wrap:wrap}
-    nav a{color:#fff;text-decoration:none;padding:8px 12px;border-radius:8px;opacity:.95}
-    nav a:hover{background:rgba(255,255,255,.12)}
-
-    main{max-width:980px; margin:18px auto; padding:0 14px}
-    .card{background:var(--card); border-radius:14px; padding:18px; box-shadow:var(--shadow); border:1px solid rgba(229,231,235,.7)}
-    h2{margin:0 0 8px}
-    .muted{color:var(--muted); margin:0 0 12px; line-height:1.7}
-
-    .row{display:grid; gap:12px; grid-template-columns:1fr}
-    @media(min-width:820px){ .row{grid-template-columns:1fr 1fr} }
-
-    label{display:block;margin:10px 0 6px;font-weight:700}
-    input,select{
-      width:100%;padding:12px;border-radius:10px;border:1px solid #d1d5db;
-      font-size:16px;background:#fff; outline:none;
+    body{
+      margin:0;
+      font-family: Arial, system-ui, -apple-system, Segoe UI, Tahoma, sans-serif;
+      background: var(--bg);
+      color: var(--text);
     }
-    input:focus,select:focus{border-color:rgba(15,76,129,.55); box-shadow:0 0 0 4px rgba(15,76,129,.10)}
+    header{
+      background: var(--brand);
+      color:#fff;
+      padding:18px 14px;
+    }
+    header h1{margin:0;font-size:20px}
+    header p{margin:6px 0 0;opacity:.95;font-size:13px}
 
+    main{
+      max-width: 720px;
+      margin: 18px auto;
+      padding: 0 12px;
+    }
+    .card{
+      background: var(--card);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 16px;
+      border: 1px solid var(--line);
+    }
+    .grid{
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 800px){
+      .grid-2{grid-template-columns: 1fr 1fr;}
+    }
+
+    label{
+      display:block;
+      font-weight:700;
+      margin: 10px 0 6px;
+      font-size: 14px;
+    }
+    input, select{
+      width:100%;
+      padding: 11px 12px;
+      border-radius: 10px;
+      border:1px solid var(--line);
+      font-size: 15px;
+      background:#fff;
+      outline: none;
+    }
+    input:focus, select:focus{
+      border-color: rgba(15,76,129,.55);
+      box-shadow: 0 0 0 4px rgba(15,76,129,.12);
+    }
+
+    .hint{
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 6px;
+      line-height: 1.6;
+    }
+
+    .row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
     .btn{
-      margin-top:14px;background:var(--brand);color:#fff;border:none;width:100%;
-      padding:12px 16px;border-radius:10px;font-weight:800;font-size:16px;cursor:pointer;
+      background: var(--brand);
+      color:#fff;
+      border:none;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      min-width: 160px;
     }
-    .btn:disabled{opacity:.65;cursor:not-allowed}
-
-    .trust{
-      margin-top:14px; padding-top:12px; border-top:1px dashed var(--line);
-      font-size:13px; color:var(--muted); line-height:1.7;
-      display:grid; gap:6px;
+    .btn:hover{background: var(--brand-dark)}
+    .btn:disabled{
+      opacity:.65;
+      cursor:not-allowed;
     }
-    .trust a{color:var(--brand); text-decoration:none; font-weight:700}
-    .trust a:hover{text-decoration:underline}
 
     .msg{
-      display:none; margin-top:12px; padding:12px; border-radius:10px; font-weight:700;
-      border:1px solid var(--line);
-      white-space:pre-wrap;
-      word-break:break-word;
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background:#fff;
+      font-size: 14px;
+      line-height: 1.7;
+      display:none;
     }
-    .msg.ok{display:block; background:#eaf7ef; color:var(--ok); border-color:rgba(22,163,74,.25)}
-    .msg.bad{display:block; background:#fdecec; color:var(--bad); border-color:rgba(180,35,24,.25)}
+    .msg.ok{border-color: rgba(22,163,74,.35); background: rgba(22,163,74,.06); color: var(--ok); display:block;}
+    .msg.bad{border-color: rgba(180,35,24,.35); background: rgba(180,35,24,.06); color: var(--bad); display:block;}
+    .msg.info{border-color: rgba(15,76,129,.25); background: rgba(15,76,129,.06); color: var(--brand); display:block;}
 
-    footer{margin-top:18px; text-align:center; padding:14px; color:var(--muted)}
+    footer{
+      text-align:center;
+      color: var(--muted);
+      font-size: 12px;
+      padding: 18px 12px;
+    }
+    .smalllink{
+      color: var(--brand);
+      text-decoration: none;
+      font-weight: 700;
+    }
   </style>
 </head>
 
 <body>
+  <header>
+    <h1>تسجيل تاجر جديد</h1>
+    <p>عبّ البيانات، وبعدها نوديك لصفحة الباقات</p>
+  </header>
 
-<header>
-  <h1>ابدأ الآن</h1>
-  <p>املأ بيانات بسيطة — وسيتم تسجيل طلبك فورًا بشكل آلي</p>
-</header>
+  <main>
+    <div class="card">
+      <form id="signupForm" autocomplete="on">
+        <div class="grid grid-2">
+          <div>
+            <label for="business_name">اسم النشاط *</label>
+            <input id="business_name" name="business_name" type="text" placeholder="مثال: مؤسسة عالم الفخامة" required />
+          </div>
 
-<nav>
-  <a href="index.html">الرئيسية</a>
-  <a href="pricing.html">الباقات</a>
-  <a href="signup.html">ابدأ الآن</a>
-  <a href="contact.html">تواصل</a>
-</nav>
-
-<main>
-  <section class="card">
-    <h2>بيانات النشاط</h2>
-    <p class="muted">
-      سيتم حفظ بياناتك مباشرة في النظام. لن نطلب منك أي بيانات بنكية هنا.
-    </p>
-
-    <!-- ✅ لا نستخدم onsubmit="return false" -->
-    <form id="signupForm">
-      <div class="row">
-        <div>
-          <label for="biz">اسم النشاط</label>
-          <input id="biz" placeholder="مثال: عالم الفخامة للديكور" autocomplete="organization" required />
+          <div>
+            <label for="business_type">نوع النشاط</label>
+            <select id="business_type" name="business_type">
+              <option value="">اختر (اختياري)</option>
+              <option value="مطعم">مطعم</option>
+              <option value="مقهى">مقهى</option>
+              <option value="تجزئة">تجزئة</option>
+              <option value="خدمات">خدمات</option>
+              <option value="عقار">عقار</option>
+              <option value="مستلزمات رحلات">مستلزمات رحلات</option>
+              <option value="أثاث">أثاث</option>
+              <option value="أخرى">أخرى</option>
+            </select>
+          </div>
         </div>
-<!-- باقة الاشتراك (تجي تلقائيًا من صفحة الباقات) -->
-<div style="margin:10px 0">
-  <label style="display:block;margin:10px 0 6px;font-weight:700">الباقة</label>
-  <input id="planLabel" type="text" value="—" readonly
-         style="width:100%;padding:10px 12px;border-radius:10px;border:1px solid #e5e7eb;background:#f9fafb" />
-  <input type="hidden" id="plan" name="plan" value="">
-  <p style="margin:8px 0 0;color:#6b7280;font-size:13px;line-height:1.7">
-    تم تحديد الباقة تلقائيًا من صفحة الباقات.
-  </p>
-</div>
-        <div>
-          <label for="type">نوع النشاط</label>
-          <select id="type">
-            <option value="أثاث">أثاث</option>
-            <option value="مطعم / كوفي">مطعم / كوفي</option>
-            <option value="مغسلة / صالون">مغسلة / صالون</option>
-            <option value="سوبرماركت">سوبرماركت</option>
-            <option value="عقارات">عقارات</option>
-            <option value="أخرى">أخرى</option>
-          </select>
+
+        <div class="grid grid-2">
+          <div>
+            <label for="city">المدينة</label>
+            <input id="city" name="city" type="text" placeholder="مثال: الرياض/جدة" />
+          </div>
+
+          <div>
+            <label for="whatsapp">رقم الواتساب *</label>
+            <input id="whatsapp" name="whatsapp" type="text" placeholder="مثال: 05xxxxxxxx" required />
+            <div class="hint">يفضّل كتابة الرقم بصيغة محلية: 05xxxxxxxx</div>
+          </div>
         </div>
 
         <div>
-          <label for="city">المدينة</label>
-          <input id="city" placeholder="مثال: الرياض / جدة" autocomplete="address-level2" />
+          <label for="email">البريد الإلكتروني *</label>
+          <input id="email" name="email" type="email" placeholder="name@example.com" required />
         </div>
 
-        <div>
-          <label for="email">الإيميل</label>
-          <input id="email" type="email" placeholder="example@email.com" autocomplete="email" required />
+        <div class="row">
+          <button id="submitBtn" class="btn" type="submit">تسجيل</button>
+          <div class="hint">
+            لديك حساب؟ <a class="smalllink" href="renew.html">تجديد / دخول</a>
+          </div>
         </div>
 
-        <div>
-          <label for="whatsapp">رقم الواتساب</label>
-          <input id="whatsapp" inputmode="tel" placeholder="مثال: 0500000000" autocomplete="tel" required />
-          <div class="muted" style="font-size:12px;margin-top:6px">يفضل إدخال الرقم بدون رموز أو مسافات.</div>
-        </div>
-      </div>
+        <p id="statusMsg" class="msg"></p>
+      </form>
+    </div>
+  </main>
 
-      <!-- ✅ submit بدل onclick -->
-      <button id="submitBtn" type="submit" class="btn">
-        تسجيل النشاط
-      </button>
+  <footer>
+    © منصة التاجر الذكية
+  </footer>
 
-      <div id="statusMsg" class="msg"></div>
+  <script>
+    // ✅ 1) Project URL (عدّلها إذا اختلفت)
+    const SUPABASE_URL = "https://udsqvnvjktggdtzpoyts.supabase.co";
 
-      <div class="trust">
-        <div>🔒 بياناتك تُستخدم فقط لغرض تسجيل الطلب وتنفيذ الخدمة.</div>
-        <div>✅ لا يتم تخزين أي بيانات بنكية داخل هذا النموذج.</div>
-        <div>📄 بإرسالك الطلب فأنت توافق على <a href="privacy.html">سياسة الخصوصية</a>.</div>
-      </div>
-    </form>
-  </section>
-</main>
+    // ✅ 2) Edge Function (تسجيل التاجر)
+    // لازم تكون عندك Edge Function اسمها: register-merchant
+    const REGISTER_URL = `${SUPABASE_URL}/functions/v1/register-merchant`;
 
-<footer>© 2026 منصة التاجر الذكية</footer>
+    const form = document.getElementById("signupForm");
+    const msgEl = document.getElementById("statusMsg");
+    const btn = document.getElementById("submitBtn");
 
-<script>
-  /**
-   * ✅ مهم:
-   * - استخدم Publishable/Anon فقط داخل المتصفح
-   * - لا تستخدم Service Role داخل HTML نهائيًا
-   */
-
-  // 1) Project URL
-  const SUPABASE_URL = "https://udsqvnvjktggdtzpoyts.supabase.co";
-
-  // 2) ضع المفتاح هنا (Publishable/Anon) كامل وفي سطر واحد فقط
-  // مثال صحيح: sb_publishable_... أو eyJhbGci... (كامل)
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkc3F2bnZqa3RnZ2R0enBveXRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk4NjMyMDEsImV4cCI6MjA4NTQzOTIwMX0.le_aDD0cB7PCg_d6bH_rvGfGagqriEN1oinXV5N-frM";
-
-  // 3) Edge Function endpoint
-  const EDGE_FUNCTION_URL = `${SUPABASE_URL}/functions/v1/smooth-action`;
-
-  const form = document.getElementById("signupForm");
-  const msgEl = document.getElementById("statusMsg");
-  const btn = document.getElementById("submitBtn");
-
-  // أي خطأ JS سيظهر لك رسالة بدل الصمت
-  window.addEventListener("error", (e) => {
-    showMsg("bad", "⚠️ خطأ في الصفحة: " + (e?.message || "غير معروف"));
-  });
-
-  function showMsg(type, text){
-    msgEl.className = "msg " + (type === "ok" ? "ok" : "bad");
-    msgEl.textContent = text;
-    msgEl.style.display = "block";
-  }
-
-  function normalizePhone(value){
-    return (value || "")
-      .replace(/\s+/g, "")
-      .replace(/[()\-\+]/g, "");
-  }
-
-  function setLoading(loading){
-    btn.disabled = loading;
-    btn.textContent = loading ? "جارٍ تسجيل النشاط..." : "تسجيل النشاط";
-  }
-
-  function isKeyLooksWrong(key){
-    if (!key) return true;
-    if (key.includes("PASTE_YOUR")) return true;
-    // لو كان فقط بداية JWT قصيرة جدًا غالبًا ناقص
-    if (key.startsWith("eyJ") && key.length < 200) return true;
-    // لو كان فيه أسطر جديدة يكسر أو يسبب مشاكل
-    if (key.includes("\n")) return true;
-    return false;
-  }
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    setLoading(true);
-    showMsg("ok", "⏳ جارٍ الإرسال..."); // رسالة فورية
-
-    const business_name = document.getElementById("biz").value.trim();
-    const business_type = document.getElementById("type").value.trim();
-    const city = document.getElementById("city").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const whatsapp = normalizePhone(document.getElementById("whatsapp").value.trim());
-
-    if (!business_name || !email || !whatsapp){
-      showMsg("bad", "فضلاً أدخل: اسم النشاط + الإيميل + رقم الواتساب.");
-      setLoading(false);
-      return;
+    function showMsg(type, text){
+      msgEl.className = "msg " + type;
+      msgEl.textContent = text;
     }
 
-    if (isKeyLooksWrong(SUPABASE_ANON_KEY)){
-      showMsg("bad",
-        "⚠️ المفتاح غير صحيح/ناقص.\n" +
-        "لازم تلصق Publishable/Anon key كامل في سطر واحد.\n" +
-        "لا تستخدم sb_secret ولا Service Role."
-      );
-      setLoading(false);
-      return;
+    function sanitizePhone(v){
+      return (v || "").toString().trim().replace(/\s+/g, "");
     }
 
-    // Timeout 15 ثانية
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-    try{
-      const res = await fetch(EDGE_FUNCTION_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "apikey": SUPABASE_ANON_KEY,
-          "Authorization": "Bearer " + SUPABASE_ANON_KEY
-        },
-        body: JSON.stringify({ business_name, business_type, city, email, whatsapp }),
-        signal: controller.signal
-      });
+      const business_name = document.getElementById("business_name").value.trim();
+      const business_type = document.getElementById("business_type").value.trim();
+      const city = document.getElementById("city").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const whatsapp = sanitizePhone(document.getElementById("whatsapp").value);
 
-      const raw = await res.text();
-      let data = {};
-      try { data = JSON.parse(raw); } catch {}
-
-      if (res.ok && (data.success === true || data.ok === true)){
-        showMsg("ok", "✅ تم تسجيل نشاطك بنجاح. تم استلام الطلب وسيتم تنفيذ الإجراء آليًا.");
-        form.reset();
-      } else if (res.status === 401 || res.status === 403){
-        showMsg("bad", "❌ غير مصرح (401/403).\nتأكد أنك تستخدم Publishable/Anon وليس Secret/Service Role.");
-      } else if (res.status === 404){
-        showMsg("bad", "❌ رابط الفنكشن غير صحيح.\nتأكد أن smooth-action منشور وأن الرابط صحيح.");
-      } else {
-        const serverMsg = (data && (data.error || data.message)) ? (data.error || data.message) : "";
-        showMsg("bad",
-          `❌ فشل الإرسال.\nالحالة: ${res.status}\n` +
-          (serverMsg ? `السبب: ${serverMsg}` : `الرد: ${raw.slice(0,220)}`)
-        );
+      // تحقق بسيط قبل الإرسال
+      if (!business_name || !email || !whatsapp) {
+        showMsg("bad", "فضلاً أكمل الحقول المطلوبة: اسم النشاط + البريد + الواتساب");
+        return;
       }
-    } catch (err){
-      if (err && err.name === "AbortError"){
-        showMsg("bad", "⏱️ انتهت مهلة الاتصال (15 ثانية). تأكد من الإنترنت وحاول مرة أخرى.");
-      } else {
-        showMsg("bad", "⚠️ تعذر الاتصال بالخادم: " + (err?.message || "غير معروف"));
+
+      btn.disabled = true;
+      showMsg("info", "جاري التسجيل...");
+
+      const payload = { business_name, business_type, city, email, whatsapp };
+
+      try {
+        const res = await fetch(REGISTER_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        // متوقع من الدالة ترجع:
+        // { success: true, merchant_id: "uuid...", message: "..." }
+        if (!res.ok || !data || data.success !== true) {
+          const errText = (data && (data.error || data.message)) ? (data.error || data.message) : "فشل التسجيل";
+          showMsg("bad", errText);
+          btn.disabled = false;
+          return;
+        }
+
+        if (!data.merchant_id) {
+          showMsg("bad", "تم التسجيل لكن لم يصل merchant_id من السيرفر. راجع دالة register-merchant.");
+          btn.disabled = false;
+          return;
+        }
+
+        // حفظ المعرف
+        localStorage.setItem("merchant_id", data.merchant_id);
+
+        showMsg("ok", "تم التسجيل ✅ جاري تحويلك إلى صفحة الباقات...");
+
+        // تحويل لصفحة الباقات
+        setTimeout(() => {
+          window.location.href = `pricing.html?merchant_id=${encodeURIComponent(data.merchant_id)}`;
+        }, 700);
+
+      } catch (err) {
+        showMsg("bad", "خطأ اتصال. تأكد من الرابط أو من حالة Supabase وحاول مرة ثانية.");
+        btn.disabled = false;
       }
-    } finally {
-      clearTimeout(timeoutId);
-      setLoading(false);
-    }
-  });
-</script>
-<script>
-  (function () {
-    const params = new URLSearchParams(location.search);
-    const plan = (params.get("plan") || "").toLowerCase();
-
-    const map = {
-      basic:   { label: "الأساسية (10 ريال / شهريًا)" },
-      pro:     { label: "المتقدمة (25 ريال / شهريًا)" },
-      premium: { label: "البرو (49 ريال / شهريًا)" }
-    };
-
-    const chosen = map[plan] ? plan : "basic"; // الافتراضي الأساسية
-
-    const planHidden = document.getElementById("plan");
-    const planLabel  = document.getElementById("planLabel");
-
-    if (planHidden) planHidden.value = chosen;
-    if (planLabel)  planLabel.value  = map[chosen].label;
-
-    // لو تبغى تمنع التسجيل بدون plan صحيح:
-    // إذا الرابط جا بدون plan يثبت الأساسية تلقائيًا (كما فوق)
-  })();
-</script>
+    });
+  </script>
 </body>
 </html>
